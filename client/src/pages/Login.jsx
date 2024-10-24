@@ -1,6 +1,7 @@
+import React from 'react'
 import { useState } from 'react';
 import axios from 'axios';
-import "./login.css"
+import "./Login.css"
 const Login = () => {
   const [formData, setFormData] = useState({
     email: '',
@@ -21,11 +22,13 @@ const Login = () => {
 
     try {
       const response = await axios.post('http://localhost:5000/api/users/login', formData);
-      setMessage(response.data.message || 'Login realizado com sucesso!');
-      setFormData({ email: '', password: '' });
-      // Redirecionar ou realizar outras ações aqui após o login
+      const { token } = response.data;
+
+      // Armazenar o token JWT no localStorage
+      localStorage.setItem('token', token);
+      setMessage('Login realizado com sucesso!');
     } catch (error) {
-      setMessage(error.response.data.error || 'Erro ao realizar o login!');
+      setMessage(error.response?.data?.error || 'Erro ao realizar login.');
     }
   };
 
