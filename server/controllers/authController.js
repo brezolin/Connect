@@ -31,3 +31,34 @@ exports.login = async (req, res) => {
     res.status(500).json({ error: 'Erro no servidor' });
   }
 };
+
+// Função de registro
+exports.register = async (req, res) => {
+  const { name, email, password } = req.body;
+
+  try {
+    // Verificar se o usuário já existe
+    const existingUser = await User.findOne({ where: { email } });
+    if (existingUser) {
+      return res.status(400).json({ error: 'E-mail já está em uso' });
+    }
+
+    // Criptografar a senha
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Criar o novo usuário
+    const newUser = await User.create({
+      name,
+      email,
+      password: hashedPassword
+    });
+
+    // Gerar o token JWT para o novo usuário
+    const token = jwt.sign({ id: newUser.id, email: newUser.email }, secretKey, { expiresIn: '1h' });
+
+    // Retornar o token
+    res.status(201).json({ token });
+  } catch (error) {
+    res.status(500).json({ error: 'Erro ao registrar o usuário' });
+  }
+};
