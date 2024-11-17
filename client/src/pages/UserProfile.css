@@ -1,0 +1,109 @@
+.profile-container {
+  padding: 20px;
+  text-align: center;
+  background-color: #0b0b0d;
+  color: #fff;
+}
+
+.profile-card {
+  background-color: #141414;
+  padding: 20px;
+  border-radius: 10px;
+  margin: 20px auto;
+  max-width: 600px;
+}
+
+.platforms-grid,
+.games-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 10px;
+}
+
+.platform-card,
+.game-card {
+  text-align: center;
+  background-color: #1d1d1f;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.platform-image,
+.game-image {
+  width: 100%;
+  border-radius: 5px;
+}
+
+.add-icon-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #28a745;
+  color: #fff;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.add-icon {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.add-form {
+  margin-top: 20px;
+}
+
+.input {
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  width: 100%;
+}
+
+.search-results {
+  position: absolute;
+  top: 40px;
+  left: 0;
+  width: 100%;
+  background-color: #141414;
+  list-style: none;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.search-result-item {
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  cursor: pointer;
+  color: #fff;
+  gap: 10px;
+}
+
+.search-result-image {
+  width: 30px;
+  height: 30px;
+  border-radius: 5px;
+}
+
+.remove-button,
+.add-button {
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 5px;
+  cursor: pointer;
+}
+
+.add-button {
+  background-color: #28a745;
+}

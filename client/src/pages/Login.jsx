@@ -1,34 +1,31 @@
-import React from 'react'
-import { useState } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
-import "./Login.css"
-const Login = () => {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
+import { useNavigate, Link } from 'react-router-dom';
+import './Login.css';
 
+const Login = () => {
+  const [formData, setFormData] = useState({ email: '', password: '' });
   const [message, setMessage] = useState('');
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post('http://localhost:5000/api/users/login', formData);
+      const response = await axios.post('http://localhost:3000/api/users/login', formData); // Certifique-se de que o URL está correto
       const { token } = response.data;
 
-      // Armazenar o token JWT no localStorage
-      localStorage.setItem('token', token);
+      localStorage.setItem('token', token); // Armazenar o token JWT no localStorage
       setMessage('Login realizado com sucesso!');
+
+      // Redireciona para a página inicial ou outra página
+      navigate('/');
     } catch (error) {
-      setMessage(error.response?.data?.error || 'Erro ao realizar login.');
+      setMessage(error.response?.data?.error || 'Erro ao realizar login. Verifique suas credenciais e tente novamente.');
     }
   };
 
@@ -59,6 +56,9 @@ const Login = () => {
         </div>
         <button type="submit" className="login-button">Entrar</button>
       </form>
+      <div className="register-link">
+        <p>Não tem uma conta? <Link to="/register">Registre-se aqui</Link></p>
+      </div>
     </div>
   );
 };
