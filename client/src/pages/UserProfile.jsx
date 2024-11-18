@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import './UserProfile.css'; // Importando o arquivo de estilos
 
-const Profile = ({ userId }) => { // Recebendo userId como prop
+const Profile = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -10,14 +11,10 @@ const Profile = ({ userId }) => { // Recebendo userId como prop
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [showAddOptions, setShowAddOptions] = useState(false);
+  const userId = 1;
 
-  // Buscar perfil do usuário
   useEffect(() => {
     const fetchUserProfile = async () => {
-      setLoading(true);
-      setUser(null); // Redefine o estado do usuário
-      setError('');
-      setSearchResults([]); // Redefine os resultados da busca
       try {
         const response = await axios.get(`http://localhost:3000/api/users/${userId}`);
         setUser(response.data);
@@ -29,9 +26,8 @@ const Profile = ({ userId }) => { // Recebendo userId como prop
     };
 
     fetchUserProfile();
-  }, [userId]); // Adicionando userId como dependência para recarregar o perfil
+  }, [userId]);
 
-  // Buscar plataformas disponíveis
   useEffect(() => {
     const fetchAvailablePlatforms = async () => {
       try {
@@ -45,7 +41,6 @@ const Profile = ({ userId }) => { // Recebendo userId como prop
     fetchAvailablePlatforms();
   }, []);
 
-  // Atualizar resultados da busca de jogos enquanto digita
   useEffect(() => {
     if (searchTerm.trim() === '') {
       setSearchResults([]);
@@ -137,7 +132,6 @@ const Profile = ({ userId }) => { // Recebendo userId como prop
         <h2>{user.name}</h2>
         <p><strong>Email:</strong> {user.email}</p>
 
-        {/* Plataformas */}
         <div>
           <h3>Plataformas</h3>
           {platforms.length === 0 ? (
@@ -164,7 +158,6 @@ const Profile = ({ userId }) => { // Recebendo userId como prop
           )}
         </div>
 
-        {/* Jogos Favoritos */}
         <div>
           <h3>Jogos Favoritos</h3>
           {favoriteGames.length === 0 ? (
@@ -191,6 +184,52 @@ const Profile = ({ userId }) => { // Recebendo userId como prop
           )}
         </div>
       </div>
+
+      <div className="add-icon-container" onClick={() => setShowAddOptions(!showAddOptions)}>
+        <span className="add-icon">+</span>
+      </div>
+
+      {showAddOptions && (
+        <div className="add-form">
+          <h3>Adicionar Plataforma</h3>
+          <select
+            value={selectedPlatform}
+            onChange={(e) => setSelectedPlatform(e.target.value)}
+            className="input"
+          >
+            <option value="">Selecione uma Plataforma</option>
+            {availablePlatforms.map((platform) => (
+              <option key={platform.id} value={platform.name}>
+                {platform.name}
+              </option>
+            ))}
+          </select>
+          <button onClick={handleAddPlatform} className="add-button">Adicionar Plataforma</button>
+
+          <h3>Buscar Jogos</h3>
+          <input
+            type="text"
+            placeholder="Buscar jogos..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="input"
+          />
+          {searchResults.length > 0 && (
+            <ul className="search-results">
+              {searchResults.map((game) => (
+                <li
+                  key={game.id}
+                  className="search-result-item"
+                  onClick={() => handleAddGame(game)}
+                >
+                  <img src={game.image} alt={game.name} className="search-result-image" />
+                  <span>{game.name}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
     </div>
   );
 };

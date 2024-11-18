@@ -1,8 +1,17 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './Navegacao.css'; // Importa o arquivo CSS para estilos
 
 const Navegacao = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    // Remover token do localStorage (ou qualquer armazenamento usado)
+    localStorage.removeItem('token');
+    // Redirecionar para a página de login
+    navigate('/login');
+  };
+
   return (
     <nav className="navegacao">
       <div className="nav-container">
@@ -21,6 +30,11 @@ const Navegacao = () => {
           </li>
           <li>
             <Link to="/friends">Amigos</Link>
+          </li>
+          <li>
+            <button onClick={handleLogout} className="nav-logout-button">
+              Logout
+            </button>
           </li>
         </ul>
       </div>
