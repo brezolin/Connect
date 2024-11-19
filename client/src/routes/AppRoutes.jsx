@@ -1,38 +1,28 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import React, { useContext } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Register from '../pages/Register';
 import Login from '../pages/Login';
 import Home from '../pages/Home';
 import UserProfile from '../pages/UserProfile';
-import Navegacao from '../pages/Navegacao/Navegacao'; // Importando o componente de navegação
+import Navigation from '../components/Navegacao';
+import { AuthContext } from '../context/AuthContext';
+
+const ProtectedRoute = ({ children }) => {
+  const { isAuthenticated } = useContext(AuthContext);
+  return isAuthenticated ? children : <Navigate to="/login" />;
+};
 
 const AppRoutes = () => {
   return (
     <Router>
-      <MainRoutes />
-    </Router>
-  );
-};
-
-const MainRoutes = () => {
-  const location = useLocation(); // Obter a localização atual
-
-  // Verificar se a rota atual é `/login` ou `/register`
-  const showNavigation = !['/login', '/register'].includes(location.pathname);
-
-  return (
-    <>
-      {/* Mostrar o componente de navegação se não estiver nas rotas de login ou registro */}
-      {showNavigation && <Navegacao />}
-
+      <Navigation />
       <Routes>
-        <Route path="/" element={<Home />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/profile" element={<UserProfile />} />
-        {/* Outras rotas aqui */}
+        <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+        <Route path="/profile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
       </Routes>
-    </>
+    </Router>
   );
 };
 

@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
-import './Login.css';
+import { AuthContext } from '../context/AuthContext';
+import './Login.css'; 
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -14,50 +16,51 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
-      const response = await axios.post('http://localhost:3000/api/users/login', formData); // Certifique-se de que o URL está correto
-      const { token } = response.data;
-
-      localStorage.setItem('token', token); // Armazenar o token JWT no localStorage
-      setMessage('Login realizado com sucesso!');
-
-      // Redireciona para a página inicial ou outra página
-      navigate('/');
+      const response = await axios.post('http://localhost:3000/api/auth/login', formData);
+      login(response.data.token, response.data.user); // Atualiza o estado global com token e dados do usuário
+      setMessage('Login bem-sucedido!');
+      navigate('/home');
     } catch (error) {
-      setMessage(error.response?.data?.error || 'Erro ao realizar login. Verifique suas credenciais e tente novamente.');
+      setMessage(error.response?.data?.error || 'Erro ao fazer login.');
     }
   };
 
   return (
-    <div className="login-container">
-      <h2>Login</h2>
-      {message && <p className="message">{message}</p>}
-      <form onSubmit={handleSubmit} className="login-form">
-        <div className="form-group">
-          <label>E-mail:</label>
+    <div className="gamer-login-container">
+      <div className="gamer-login-card">
+        <h2 className="gamer-login-title">Login</h2>
+        <form onSubmit={handleSubmit} className="gamer-login-form">
           <input
             type="email"
             name="email"
-            value={formData.email}
+            placeholder="Digite seu email"
             onChange={handleChange}
             required
+            className="gamer-input-field"
           />
-        </div>
-        <div className="form-group">
-          <label>Senha:</label>
           <input
             type="password"
             name="password"
-            value={formData.password}
+            placeholder="Digite sua senha"
             onChange={handleChange}
             required
+            className="gamer-input-field"
           />
-        </div>
-        <button type="submit" className="login-button">Entrar</button>
-      </form>
-      <div className="register-link">
-        <p>Não tem uma conta? <Link to="/register">Registre-se aqui</Link></p>
+          <button type="submit" className="gamer-submit-button">Entrar</button>
+          {message && (
+            <p
+              className={`gamer-message ${
+                message.includes('bem-sucedido') ? 'success' : 'error'
+              }`}
+            >
+              {message}
+            </p>
+          )}
+        </form>
+        <Link to="/register" className="gamer-register-link">
+          Não possui conta? Registre-se
+        </Link>
       </div>
     </div>
   );

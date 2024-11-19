@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
-import './Register.css';
+import { useNavigate } from 'react-router-dom';
+import './login.css'; // Certifique-se de criar este arquivo CSS
+import { AuthContext } from '../context/AuthContext';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -8,9 +10,9 @@ const Register = () => {
     email: '',
     password: '',
   });
-
   const [message, setMessage] = useState('');
-  const [error, setError] = useState(false);
+  const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
 
   const handleChange = (e) => {
     setFormData({
@@ -21,65 +23,56 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!formData.username || !formData.email || !formData.password) {
-      setMessage('Todos os campos são obrigatórios');
-      setError(true);
-      return;
-    }
-
     try {
-      const response = await axios.post('http://localhost:3000/api/users/register', formData);
+      const response = await axios.post('http://localhost:3000/api/auth/register', formData);
+      login(response.data.token, response.data.user); // Faz login automaticamente após o registro
       setMessage('Cadastro realizado com sucesso!');
-      setError(false);
-      setFormData({ username: '', email: '', password: '' });
+      navigate('/home');
     } catch (error) {
-      setMessage(error.response?.data?.error || 'Erro ao cadastrar!');
-      setError(true);
+      setMessage(error.response?.data?.error || 'Erro ao cadastrar. Tente novamente.');
     }
   };
 
   return (
-    <div className="register-container">
-      <h2>Cadastro</h2>
-      {message && (
-        <p className={`message ${error ? 'error' : 'success'}`}>{message}</p>
-      )}
-      <form onSubmit={handleSubmit} className="register-form">
-        <div className="form-group">
-          <label>Nome de usuário:</label>
+    <div className="gamer-login-container">
+      <div className="gamer-login-card">
+        <h2 className="gamer-login-title">Cadastro</h2>
+        <form onSubmit={handleSubmit} className="gamer-login-form">
           <input
             type="text"
             name="username"
-            value={formData.username}
+            placeholder="Usuário"
             onChange={handleChange}
             required
+            className="gamer-input-field"
           />
-        </div>
-        <div className="form-group">
-          <label>E-mail:</label>
           <input
             type="email"
             name="email"
-            value={formData.email}
+            placeholder="Email"
             onChange={handleChange}
             required
+            className="gamer-input-field"
           />
-        </div>
-        <div className="form-group">
-          <label>Senha:</label>
           <input
             type="password"
             name="password"
-            value={formData.password}
+            placeholder="Senha"
             onChange={handleChange}
             required
+            className="gamer-input-field"
           />
-        </div>
-        <button type="submit" className="register-button">Cadastrar</button>
-      </form>
-      <div>
-        Já tem uma conta? <a href="/login">Faça login</a>
+          <button type="submit" className="gamer-submit-button">Registrar</button>
+          {message && (
+            <p
+              className={`gamer-message ${
+                message.includes('sucesso') ? 'success' : 'error'
+              }`}
+            >
+              {message}
+            </p>
+          )}
+        </form>
       </div>
     </div>
   );

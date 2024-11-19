@@ -11,11 +11,19 @@ const platformRoutes = require('./src/routes/platformRoutes');
 
 const port = 3000
 const app = express();
-app.use(cors());
+const corsOptions = {
+  origin: ['http://localhost:5173'], // Adicione as origens permitidas
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos HTTP permitidos
+  allowedHeaders: ['Content-Type', 'Authorization'], // Cabeçalhos permitidos
+  credentials: true, // Permite o envio de cookies ou credenciais
+};
+
+app.use(cors(corsOptions));
+
 app.use(express.json());
 
 // Rotas de autenticação
-app.use('/api/users', authRoutes);
+app.use('/api/auth', authRoutes);
 
 // Rotas de Games
 app.use('/api', gameRoutes);
