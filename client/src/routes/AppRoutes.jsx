@@ -6,6 +6,8 @@ import Home from '../pages/Home';
 import UserProfile from '../pages/UserProfile';
 import Navigation from '../components/Navegacao';
 import { AuthContext } from '../context/AuthContext';
+import Chat from '../pages/Chat';
+import Friends from '../pages/Friends';
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useContext(AuthContext);
@@ -33,9 +35,12 @@ const AppRoutes = () => {
         <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
         <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
+        <Route path="/chat" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
+        <Route path="/friends" element={<ProtectedRoute><Friends /></ProtectedRoute>} />
+
 
         {/* Redirecionamento padrão */}
-        <Route path="*" element={<Navigate to={isAuthenticated ? "/home" : "/login"} />} />
+      
       </Routes>
     </Router>
   );

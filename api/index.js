@@ -1,54 +1,69 @@
 require('dotenv').config();
 const express = require('express');
+const http = require('http');
+const socketIo = require('socket.io');
 const cors = require('cors');
 const path = require('path');
 const sequelize = require('./config/database');
+
+// Importar rotas
 const authRoutes = require('./src/routes/authRoutes');
 const gameRoutes = require('./src/routes/gameRoutes');
 const userRoutes = require('./src/routes/userRoutes');
 const platformRoutes = require('./src/routes/platformRoutes');
+const chatRoutes = require('./src/routes/chatRoutes');
 
-
-const port = 3000
+// Criar o app Express e o servidor HTTP
 const app = express();
+const server = http.createServer(app);
+const io = socketIo(server, { cors: { origin: '*' } });
 
+// Configurações gerais
+const port = process.env.PORT || 3000;
+
+// Middleware
 app.use(cors());
-
-
 app.use(express.json());
 
-// Rotas de autenticação
+// Rotas
 app.use('/api/auth', authRoutes);
-
-// Rotas de Games
-app.use('/api', gameRoutes);
-
-// Rotas de User
-app.use('/api/users/', userRoutes);
-
-// Outras configurações do app
+app.use('/api/users', userRoutes);
 app.use('/api/platforms', platformRoutes);
-
 app.use('/api/games', gameRoutes);
+app.use('/api/chat', chatRoutes);
 
-
-// Configurar a pasta 'public' para servir arquivos estáticos
+// Servir arquivos estáticos
 app.use('/images', express.static(path.join(__dirname, 'src/images')));
 
-// Middleware para tratamento de erros globais
+// Middleware de tratamento de erros
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send({ message: 'Algo deu errado no servidor!' });
 });
 
-// Variável de ambiente para a porta
+// Configuração do WebSocket
+io.on('connection', (socket) => {
+  console.log('Novo cliente conectado:', socket.id);
 
-sequelize.sync().then(async () => {
-  console.log('Conectado ao banco de dados MySQL!');
-
-  app.listen(port, () => {
-    console.log(`Servidor rodando na porta ${port}`);
+  socket.on('sendMessage', (data) => {
+    // Enviar a mensagem para o destinatário
+    io.to(data.receiverId).emit('receiveMessage', data);
   });
-}).catch(err => {
-  console.error('Erro ao sincronizar com o banco de dados:', err);
+
+  socket.on('disconnect', () => {
+    console.log('Cliente desconectado:', socket.id);
+  });
 });
+
+// Sincronizar o Sequelize e iniciar o servidor
+sequelize
+  .sync()
+  .then(() => {
+    console.log('Conectado ao banco de dados MySQL!');
+    server.listen(port, () => {
+      console.log(`Servidor rodando na porta ${port}`);
+    });
+  })
+  .catch((err) => {
+    console.error('Erro ao sincronizar com o banco de dados:', err);
+  });

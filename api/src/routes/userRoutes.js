@@ -5,22 +5,24 @@ const {
   addGameToUser,
   removePlatformFromUser,
   removeGameFromUser,
+  getUserFriends,
+  addFriends,
+  buscaFriends,
+  buscaTodosUsuarios,
 } = require('../controllers/userController');
 const router = express.Router();
 
-// Rota para buscar perfil do usuário
-router.get('/:id', getUserProfile);
+// Rotas específicas (fixas) devem vir primeiro
+router.get('/search', buscaFriends); // Buscar usuários
+router.get('/all', buscaTodosUsuarios); // Buscar todos os usuários
 
-// Rota para adicionar uma plataforma ao usuário
-router.post('/:id/platforms', addPlatformToUser);
-
-// Rota para remover uma plataforma do usuário
-router.delete('/:id/platforms', removePlatformFromUser);
-
-// Rota para adicionar um jogo favorito ao usuário
-router.post('/:id/games', addGameToUser);
-
-// Rota para remover um jogo favorito do usuário
-router.delete('/:id/games', removeGameFromUser);
+// Rotas dinâmicas (genéricas) devem vir depois
+router.get('/:id', getUserProfile); // Buscar perfil do usuário
+router.post('/:id/platforms', addPlatformToUser); // Adicionar plataforma
+router.delete('/:id/platforms', removePlatformFromUser); // Remover plataforma
+router.post('/:id/games', addGameToUser); // Adicionar jogo favorito
+router.delete('/:id/games', removeGameFromUser); // Remover jogo favorito
+router.get('/:id/friends', getUserFriends); // Buscar amigos do usuário
+router.post('/:id/friends', addFriends); // Adicionar amigo
 
 module.exports = router;

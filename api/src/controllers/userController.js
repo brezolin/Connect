@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const Platform = require('../models/Platform');
 const axios = require('axios');
+const { Op } = require('sequelize');
 
 const rawgApi = axios.create({
   baseURL: 'https://api.rawg.io/api',
@@ -51,6 +52,7 @@ const getUserProfile = async (req, res) => {
       id: user.id,
       name: user.name,
       email: user.email,
+      username: user.username,
       platforms: platforms.map((platform) => ({
         name: platform.name,
         image_url: platform.image_url,
@@ -205,6 +207,121 @@ const removeGameFromUser = async (req, res) => {
   }
 };
 
+const addFriends = async (req, res) => {
+  const userId = req.params.id;
+  const { friendId } = req.body;
+
+  try {
+    const user = await User.findByPk(userId);
+    const friend = await User.findByPk(friendId);
+
+    if (!user || !friend) {
+      return res.status(404).json({ error: 'Usuário ou amigo não encontrado.' });
+    }
+
+    const userFriends = user.friends || [];
+    if (userFriends.includes(friendId)) {
+      return res.status(400).json({ error: 'Amigo já adicionado.' });
+    }
+
+    userFriends.push(friendId);
+    await User.update({ friends: userFriends }, { where: { id: userId } });
+
+    res.status(200).json({ message: 'Amigo adicionado com sucesso.', friends: userFriends });
+  } catch (error) {
+    console.error('Erro ao adicionar amigo:', error.message);
+    res.status(500).json({ error: 'Erro ao adicionar amigo.' });
+  }
+};
+
+
+const getUserFriends = async (req, res) => {
+  const userId = req.params.id;
+
+  try {
+    const user = await User.findByPk(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: 'Usuário não encontrado.' });
+    }
+
+    const friendsIds = user.friends || [];
+    const friends = await User.findAll({
+      where: {
+        id: friendsIds,
+      },
+      attributes: ['id', 'username'],
+    });
+
+    res.status(200).json(friends);
+  } catch (error) {
+    console.error('Erro ao buscar amigos:', error.message);
+    res.status(500).json({ error: 'Erro ao buscar amigos.' });
+  }
+};
+
+
+const buscaFriends = async (req, res) => {
+  const { query } = req.query;
+
+  // Validação do termo de busca
+  if (!query || query.trim() === '') {
+    return res.status(400).json({
+      error: 'A busca requer um termo válido.',
+      details: 'O termo de busca não pode estar vazio.',
+    });
+  }
+
+  try {
+    // Busca usuários por username ou email usando LIKE
+    const users = await User.findAll({
+      where: {
+        [Op.or]: [
+          { username: { [Op.like]: `%${query}%` } },
+          { email: { [Op.like]: `%${query}%` } },
+        ],
+      },
+      attributes: ['id', 'username', 'email'], // Retorna apenas os campos necessários
+      limit: 50, // Limite de resultados
+      order: [['username', 'ASC']], // Ordena pelo username
+    });
+
+    // Caso nenhum usuário seja encontrado
+    if (users.length === 0) {
+      return res.status(404).json({
+        message: 'Nenhum usuário encontrado.',
+        query: query,
+      });
+    }
+
+    res.status(200).json({
+      total: users.length,
+      users: users,
+    });
+  } catch (error) {
+    console.error('Erro detalhado na busca de usuários:', error);
+
+    res.status(500).json({
+      error: 'Erro interno ao processar a busca de usuários',
+      errorMessage: error.message,
+    });
+  }
+};
+
+const buscaTodosUsuarios = async (req, res) => {
+  try {
+    // Busca todos os usuários no banco de dados
+    const users = await User.findAll({
+      attributes: ['id', 'username', 'email'], // Retorna apenas os campos necessários
+    });
+
+    res.status(200).json(users);
+  } catch (error) {
+    console.error('Erro ao buscar usuários:', error.message);
+    res.status(500).json({ error: 'Erro ao buscar usuários.' });
+  }
+};
+
 
 module.exports = {
   removePlatformFromUser,
@@ -212,5 +329,9 @@ module.exports = {
   getUserProfile,
   addPlatformToUser,
   addGameToUser, 
+  getUserFriends,
+  addFriends,
+  buscaFriends,
+  buscaTodosUsuarios
 };
 

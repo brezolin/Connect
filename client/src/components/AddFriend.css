@@ -1,0 +1,116 @@
+/* Container principal */
+.add-friend-container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #1e1e2f;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    color: white;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  /* Campo de entrada de busca */
+  .add-friend-container input {
+    width: calc(100% - 100px);
+    padding: 10px;
+    margin-right: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #2a2a3c;
+    color: white;
+    font-size: 16px;
+  }
+  
+  .add-friend-container input::placeholder {
+    color: #aaa;
+  }
+  
+  /* Botão de busca */
+  .add-friend-container button {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s ease;
+  }
+  
+  .add-friend-container button:hover {
+    background-color: #45a049;
+  }
+  
+  /* Mensagem de erro */
+  .add-friend-error {
+    color: #ff4d4d;
+    margin-top: 10px;
+    font-size: 14px;
+    text-align: center;
+  }
+  
+  /* Lista de resultados */
+  .search-results {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+  }
+  
+  .search-results li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #292945;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  .search-results li strong {
+    color: #4caf50;
+  }
+  
+  .search-results li button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.3s ease;
+  }
+  
+  .search-results li button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Mensagem de nenhum usuário encontrado */
+  .no-results-message {
+    color: #aaa;
+    font-style: italic;
+    text-align: center;
+    margin-top: 10px;
+  }
+  
+  /* Responsividade */
+  @media (max-width: 480px) {
+    .add-friend-container input {
+      width: calc(100% - 90px);
+      font-size: 14px;
+    }
+  
+    .add-friend-container button {
+      font-size: 14px;
+      padding: 8px 10px;
+    }
+  
+    .search-results li button {
+      font-size: 12px;
+      padding: 5px 8px;
+    }
+  }
+  

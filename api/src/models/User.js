@@ -32,6 +32,10 @@ const User = sequelize.define('User', {
     type: DataTypes.JSON,
     allowNull: true,
   },
+  friends: {
+    type: DataTypes.JSON, // Armazena uma lista de IDs de amigos
+    allowNull: true,
+  },
 });
 
 module.exports = User;

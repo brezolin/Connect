@@ -1,0 +1,75 @@
+/* Container principal */
+.friends-list-container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #1e1e2f;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    color: white;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  /* Título */
+  .friends-list-container h2 {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #4caf50;
+  }
+  
+  /* Mensagem de erro */
+  .friends-list-error {
+    color: #ff4d4d;
+    text-align: center;
+    margin-top: 10px;
+    font-size: 14px;
+  }
+  
+  /* Lista de amigos */
+  .friends-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+  }
+  
+  .friends-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #292945;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  .friends-list li:hover {
+    background-color: #3a3a5b;
+  }
+  
+  /* Nome ou e-mail do amigo */
+  .friends-list li span {
+    font-size: 16px;
+    font-weight: bold;
+    color: #4caf50;
+  }
+  
+  /* Responsividade */
+  @media (max-width: 480px) {
+    .friends-list-container {
+      padding: 15px;
+    }
+  
+    .friends-list li {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 10px;
+    }
+  
+    .friends-list li span {
+      font-size: 14px;
+    }
+  }
+  

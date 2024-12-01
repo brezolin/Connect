@@ -1,0 +1,25 @@
+
+.messages {
+  height: 400px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.sent {
+  align-self: flex-end;
+  background-color: #007bff;
+  color: white;
+  padding: 10px;
+  margin: 5px;
+  border-radius: 10px;
+}
+
+.received {
+  align-self: flex-start;
+  background-color: #f1f1f1;
+  color: black;
+  padding: 10px;
+  margin: 5px;
+  border-radius: 10px;
+}
