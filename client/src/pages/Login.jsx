@@ -18,7 +18,7 @@ const Login = () => {
     e.preventDefault();
     try {
       const response = await axios.post('http://localhost:3000/api/auth/login', formData);
-      login(response.data.token, response.data.user); // Atualiza o estado global com token e dados do usuário
+      login(response.data.token, response.data.user.id); 
       setMessage('Login bem-sucedido!');
       navigate('/home');
     } catch (error) {

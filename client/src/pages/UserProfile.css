@@ -1,109 +1,248 @@
+/* Geral */
+
+
 .profile-container {
+  max-width: 900px;
+  margin: 30px auto;
   padding: 20px;
+  background: #050808b6;
+  border-radius: 12px;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.profile-title {
+  font-size: 2.5rem;
   text-align: center;
-  background-color: #0b0b0d;
-  color: #fff;
+  color: #222;
+  margin-bottom: 25px;
 }
 
-.profile-card {
-  background-color: #141414;
-  padding: 20px;
-  border-radius: 10px;
-  margin: 20px auto;
-  max-width: 600px;
+/* Informações do Usuário */
+.user-info {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #45a049;
 }
 
+.user-info h2 {
+  font-size: 1.8rem;
+  color: #333;
+}
+
+.user-info p {
+  font-size: 1rem;
+  color: #e60b0b;
+}
+
+/* Seções de Perfil */
+.profile-section {
+  margin-bottom: 40px;
+}
+
+.profile-section h3 {
+  font-size: 1.8rem;
+  color: #444;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.empty-message {
+  color: #777;
+  font-style: italic;
+  text-align: center;
+  font-size: 1rem;
+}
+
+/* Grids */
 .platforms-grid,
 .games-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 20px;
 }
 
+/* Cartões de Plataforma e Jogos */
 .platform-card,
 .game-card {
+  background: #a0f2f5;
+  color: #222;
+  border: 1px solid #ddd;
+  border-radius: 10px;
   text-align: center;
-  background-color: #1d1d1f;
-  padding: 10px;
-  border-radius: 5px;
+  padding: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.platform-card:hover,
+.game-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
 }
 
 .platform-image,
 .game-image {
-  width: 100%;
-  border-radius: 5px;
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  margin-bottom: 10px;
+  border-radius: 8px;
 }
 
-.add-icon-container {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background-color: #28a745;
-  color: #fff;
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
+.platform-details,
+.game-details {
+  padding: 10px 0;
+}
+
+.platform-name,
+.game-name {
+  font-size: 1rem;
+  color: #222;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+/* Botões de Remoção */
+.remove-button {
+  background: #473ce7;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.3s ease;
+}
+
+.remove-button:hover {
+  background: #c0392b;
+}
+
+/* Adicionar Card */
+.add-card {
   display: flex;
+  color: #333;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  background: #ddebe18f;
+  border: 2px dashed #aaa;
+  border-radius: 10px;
   cursor: pointer;
+  text-align: center;
+  padding: 20px;
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+.add-card:hover {
+  background: #5cf3a0;
+  border-color: #777;
 }
 
 .add-icon {
-  font-size: 24px;
-  font-weight: bold;
+  font-size: 2.5rem;
+  color: #666;
+  margin-bottom: 10px;
 }
 
-.add-form {
-  margin-top: 20px;
-}
-
-.input {
-  padding: 5px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  width: 100%;
-}
-
-.search-results {
-  position: absolute;
-  top: 40px;
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
   left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: rgb(17, 17, 17);
+  border-radius: 12px;
+  padding: 25px;
+  width: 90%;
+  max-width: 600px;
+  position: relative;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.3s ease-out;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #333;
+  transition: color 0.2s ease;
+}
+
+.close-button:hover {
+  color: #e74c3c;
+}
+
+/* Animação */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Inputs e Botões */
+.input {
   width: 100%;
-  background-color: #141414;
-  list-style: none;
   padding: 10px;
-  border-radius: 5px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  max-height: 200px;
-  overflow-y: auto;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.add-button {
+  background: #4caf50;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.3s ease;
+}
+
+.add-button:hover {
+  background: #45a049;
 }
 
 .search-result-item {
   display: flex;
   align-items: center;
-  padding: 5px;
+  background-color: white;
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 8px;
   cursor: pointer;
-  color: #fff;
-  gap: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.search-result-item:hover {
+  transform: translateY(-3px);
 }
 
 .search-result-image {
-  width: 30px;
-  height: 30px;
-  border-radius: 5px;
-}
-
-.remove-button,
-.add-button {
-  background-color: #dc3545;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  padding: 5px;
-  cursor: pointer;
-}
-
-.add-button {
-  background-color: #28a745;
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  margin-right: 15px;
+  border-radius: 6px;
 }

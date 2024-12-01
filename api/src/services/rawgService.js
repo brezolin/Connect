@@ -14,7 +14,7 @@ const fetchGames = async () => {
     const response = await rawgApi.get('/games', {
       params: {
         ordering: '-rating', // Ordenar por jogos mais bem avaliados
-        page_size: 10, // Limitar a 10 jogos por requisição
+        page_size: 20, // Limitar a 10 jogos por requisição
       },
     });
     return response.data.results;

@@ -10,7 +10,7 @@ const GameList = () => {
   useEffect(() => {
     const fetchGames = async () => {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/games`); // Dynamic URL from environment variables
+        const response = await axios.get('http://localhost:3000/api/games'); // Dynamic URL from environment variables
         setGames(response.data);
       } catch (error) {
         const message = error.response?.data?.error || 'Erro ao carregar os jogos.';

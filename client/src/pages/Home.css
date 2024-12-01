@@ -1,9 +1,14 @@
-body{
-    
-        background-image: url('../assets/DALL·E\ 2024-10-25\ 11.50.18\ -\ A\ dark\,\ neon-inspired\ background\ with\ no\ central\ details\,\ inspired\ by\ the\ Dracula\ theme\ from\ VS\ Code.\ Deep\ shades\ of\ purple\ and\ dark\ blue\ with\ soft\ ne.webp');
-        background-size: cover;
-        background-position: center;
-        height: 100vh;
-        width: 100%;
-      
-}
+:root {
+  
+        --neon-blue: #00f3ff;
+          --neon-purple: #9900ff;
+          --dark-bg: #0a0a0a;
+          --card-bg: #1a1a1a;
+          --text-glow: 0 0 10px rgba(0, 243, 255, 0.5);
+          --box-glow: 0 0 20px rgba(0, 243, 255, 0.2);
+        }
+        
+        body{
+        
+            background:#0a0a0a
+        }

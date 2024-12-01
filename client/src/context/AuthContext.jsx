@@ -23,6 +23,8 @@ const AuthProvider = ({ children }) => {
     
     localStorage.setItem('token', authToken); 
     localStorage.setItem('user', JSON.stringify(userData));
+    console.log('Conteúdo do localStorage:', localStorage);
+
     setToken(authToken); // Atualiza o estado local
     setUser(userData); // Atualiza o estado do usuário
     setIsAuthenticated(true); // Marca o usuário como autenticado

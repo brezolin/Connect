@@ -1,41 +1,45 @@
-/* Navegacao.css */
-.navegacao {
-  background-color: #141414;
-  color: #ffffff;
-  padding: 10px 20px;
+/* Navigation.css */
+
+.navigation {
+  background-color: #333; /* Fundo escuro para a barra de navegação */
+  padding: 10px 20px; /* Espaçamento interno */
 }
 
-.nav-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 1200px;
-  margin: 0 auto;
+.navigation ul {
+  list-style: none; /* Remove os marcadores da lista */
+  margin: 0;
+  padding: 0;
+  display: flex; /* Alinha os itens horizontalmente */
+  justify-content: space-between; /* Espaça os itens igualmente */
+  align-items: center; /* Centraliza verticalmente */
 }
 
-.nav-logo {
-  font-size: 1.5rem;
-  font-weight: bold;
-  text-decoration: none;
-  color: #ffffff;
+.navigation li {
+  margin: 0 15px; /* Espaçamento entre os itens */
 }
 
-.nav-links {
-  list-style: none;
-  display: flex;
-  gap: 20px;
+.navigation a {
+  text-decoration: none; /* Remove o sublinhado dos links */
+  color: #fff; /* Cor do texto */
+  font-weight: bold; /* Texto em negrito */
+  transition: color 0.3s; /* Suaviza a mudança de cor */
 }
 
-.nav-links li {
-  text-decoration: none;
+.navigation a:hover {
+  color: #f39c12; /* Cor do texto ao passar o mouse */
 }
 
-.nav-links a {
-  color: #ffffff;
-  text-decoration: none;
-  transition: color 0.3s;
+.navigation button {
+  background-color: #f39c12; /* Fundo do botão */
+  color: #fff; /* Cor do texto do botão */
+  border: none; /* Remove borda */
+  padding: 8px 15px; /* Espaçamento interno do botão */
+  border-radius: 5px; /* Bordas arredondadas */
+  font-weight: bold; /* Negrito no texto do botão */
+  cursor: pointer; /* Mostra o cursor de clique */
+  transition: background-color 0.3s; /* Suaviza a mudança de cor */
 }
 
-.nav-links a:hover {
-  color: #1e90ff; /* Cor de destaque ao passar o mouse */
+.navigation button:hover {
+  background-color: #e67e22; /* Cor do botão ao passar o mouse */
 }

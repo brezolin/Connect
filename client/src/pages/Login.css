@@ -1,7 +1,16 @@
-/* Base e variáveis */
+
 :root {
   
-}
+    --neon-blue: #00f3ff;
+      --neon-purple: #9900ff;
+      --dark-bg: #0a0a0a;
+      --card-bg: #1a1a1a;
+      --text-glow: 0 0 10px rgba(0, 243, 255, 0.5);
+      --box-glow: 0 0 20px rgba(0, 243, 255, 0.2);
+    }
+    
+    
+
 
 /* Container principal */
 .gamer-login-container {

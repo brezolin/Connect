@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom'; // Adicionado Link para navegação
 import './login.css'; // Certifique-se de criar este arquivo CSS
 import { AuthContext } from '../context/AuthContext';
 
@@ -42,6 +42,7 @@ const Register = () => {
             type="text"
             name="username"
             placeholder="Usuário"
+            value={formData.username}
             onChange={handleChange}
             required
             className="gamer-input-field"
@@ -50,6 +51,7 @@ const Register = () => {
             type="email"
             name="email"
             placeholder="Email"
+            value={formData.email}
             onChange={handleChange}
             required
             className="gamer-input-field"
@@ -58,6 +60,7 @@ const Register = () => {
             type="password"
             name="password"
             placeholder="Senha"
+            value={formData.password}
             onChange={handleChange}
             required
             className="gamer-input-field"
@@ -73,6 +76,9 @@ const Register = () => {
             </p>
           )}
         </form>
+        <Link to="/login" className="gamer-register-link">
+          Já possui uma conta? Faça login
+        </Link>
       </div>
     </div>
   );

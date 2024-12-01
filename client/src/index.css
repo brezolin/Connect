@@ -1,5 +1,5 @@
-:root{
---neon-blue: #00f3ff;
+:root {
+  --neon-blue: #00f3ff;
   --neon-purple: #9900ff;
   --dark-bg: #0a0a0a;
   --card-bg: #1a1a1a;
@@ -7,7 +7,33 @@
   --box-glow: 0 0 20px rgba(0, 243, 255, 0.2);
 }
 
-body{
+/* Fundo global */
+body {
+  min-height: 100vh;
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+  background-color: var(--dark-bg);
+  background-image: 
+    linear-gradient(45deg, #1a1a1a 25%, transparent 25%),
+    linear-gradient(-45deg, #1a1a1a 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #1a1a1a 75%),
+    linear-gradient(-45deg, transparent 75%, #1a1a1a 75%);
+  background-size: 20px 20px;
+  position: relative;
+  overflow: hidden;
+  color: white;
+}
 
-    background: linear-gradient(45deg, var(--neon-purple), var(--neon-blue))
+/* Efeito de brilho global */
+body::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, var(--neon-purple) 0%, var(--neon-blue) 100%);
+  opacity: 0.1;
+  pointer-events: none;
+  z-index: -1;
 }
