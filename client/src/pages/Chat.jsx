@@ -27,20 +27,19 @@ const Chat = () => {
   };
 
   // Buscar todas as conversas do usuário
-  useEffect(() => {
-    async function fetchConversations() {
-      try {
-        const response = await axios.get(
-          `http://localhost:3000/api/chat/conversations/${userId}`
-        );
-        setConversations(response.data); // Agora contém objetos { id, username }
-      } catch (error) {
-        console.error('Erro ao buscar conversas:', error);
-      }
+  const fetchConversations = async () => {
+    try {
+      const response = await axios.get(`http://localhost:3000/api/chat/conversations/${userId}`);
+      setConversations(response.data); // Atualiza a lista de conversas
+    } catch (error) {
+      console.error('Erro ao buscar conversas:', error);
     }
+  };
+  
+  // Use o fetchConversations no useEffect
+  useEffect(() => {
     fetchConversations();
   }, [userId]);
-
   // Buscar mensagens da conversa atual
   useEffect(() => {
     async function fetchMessages() {
@@ -68,13 +67,13 @@ const Chat = () => {
   // Atualizar mensagens em tempo real
   useEffect(() => {
     socket.on('receive_message', (message) => {
-      // Verifica se a mensagem pertence ao chat atual
-      if (
-        (message.senderId === userId && message.receiverId === Number(friendId)) ||
-        (message.senderId === Number(friendId) && message.receiverId === userId)
-      ) {
-        setMessages((prevMessages) => [...prevMessages, message]);
-      }
+      // Verifica se a mensagem já está no estado para evitar duplicação
+      setMessages((prevMessages) => {
+        if (prevMessages.find((msg) => msg.id === message.id)) {
+          return prevMessages; // Se já existir, não adiciona novamente
+        }
+        return [...prevMessages, message];
+      });
     });
 
     return () => {
@@ -95,7 +94,10 @@ const Chat = () => {
         messageData
       );
       if (response.data) {
+        // Emitir mensagem pelo socket
         socket.emit('send_message', response.data);
+
+        // Evitar duplicação ao aguardar a mensagem ser recebida pelo socket
         setMessages((prevMessages) => [...prevMessages, response.data]);
         setMessageInput('');
       }
@@ -118,9 +120,21 @@ const Chat = () => {
   // Excluir toda a conversa
   const deleteConversation = async () => {
     try {
-      await axios.delete(`http://localhost:3000/api/chat/conversation/${userId}/${friendId}`);
-      setMessages([]);
-      navigate('/chat');
+      const response = await axios.delete(`http://localhost:3000/api/chat/conversation/${userId}/${friendId}`);
+      if (response.status === 200) {
+        // Atualize a lista de conversas, removendo a conversa deletada
+        setConversations((prevConversations) =>
+          prevConversations.filter((conversation) => conversation.id !== Number(friendId))
+        );
+
+        // Remova as mensagens locais para limpar o chat
+        setMessages([]);
+
+        // Volte para a lista de conversas
+        navigate('/chat');
+      } else {
+        console.error('Erro ao excluir conversa no servidor.');
+      }
     } catch (error) {
       console.error('Erro ao excluir conversa:', error);
     }
@@ -153,13 +167,16 @@ const Chat = () => {
               Chat com{' '}
               {conversations.find((friend) => friend.id === Number(friendId))?.username || 'Amigo'}
             </h1>
-            <button 
-              onClick={() => navigate('/chat')}
+            <button
+              onClick={() => {
+                navigate('/chat')
+                fetchConversations()
+              }}
               className="back-button"
             >
               Voltar para conversas
             </button>
-            <button 
+            <button
               onClick={deleteConversation}
               className="delete-conversation-button"
             >

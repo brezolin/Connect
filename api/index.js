@@ -12,6 +12,7 @@ const gameRoutes = require('./src/routes/gameRoutes');
 const userRoutes = require('./src/routes/userRoutes');
 const platformRoutes = require('./src/routes/platformRoutes');
 const chatRoutes = require('./src/routes/chatRoutes');
+const newsRoutes = require('./src/routes/newsRoutes');
 
 // Criar o app Express e o servidor HTTP
 const app = express();
@@ -36,6 +37,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/platforms', platformRoutes);
 app.use('/api/games', gameRoutes);
 app.use('/api/chat', chatRoutes);
+app.use('/api/news', newsRoutes);
 
 // Servir arquivos estáticos
 app.use('/images', express.static(path.join(__dirname, 'src/images')));

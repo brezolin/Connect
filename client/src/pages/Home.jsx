@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import GameList from '../components/gameList';
+import Feed from '../components/Feed';
 import './Home.css'
 
 const Home = () => {
@@ -20,7 +20,7 @@ const Home = () => {
 
 
 
-      <GameList/>
+      <Feed />
     </div>
   );
 };
