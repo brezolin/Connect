@@ -5,6 +5,7 @@ const { Server } = require('socket.io');
 const cors = require('cors');
 const path = require('path');
 const sequelize = require('./config/database');
+const checkAndUpdateData = require ('./src/services/checkAndUpdateData')
 
 // Importar rotas
 const authRoutes = require('./src/routes/authRoutes');
@@ -13,6 +14,8 @@ const userRoutes = require('./src/routes/userRoutes');
 const platformRoutes = require('./src/routes/platformRoutes');
 const chatRoutes = require('./src/routes/chatRoutes');
 const newsRoutes = require('./src/routes/newsRoutes');
+const Game = require('./src/models/Games');
+
 
 // Criar o app Express e o servidor HTTP
 const app = express();
@@ -62,13 +65,18 @@ io.on('connection', (socket) => {
   });
 });
 
+
+
+
 // Sincronizar o Sequelize e iniciar o servidor
 sequelize
   .sync()
   .then(() => {
     console.log('Conectado ao banco de dados MySQL!');
+    checkAndUpdateData();
     server.listen(port, () => {
       console.log(`Servidor rodando na porta ${port}`);
+      
     });
   })
   .catch((err) => {
