@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import GameList from '../components/gameList';
+import './Home.css'
 
 const Home = () => {
   const navigate = useNavigate();

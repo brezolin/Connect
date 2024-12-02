@@ -37,6 +37,7 @@ const AppRoutes = () => {
         <Route path="/profile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
         <Route path="/chat" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
         <Route path="/friends" element={<ProtectedRoute><Friends /></ProtectedRoute>} />
+        <Route path="/chat/:friendId" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
 
 
         {/* Redirecionamento padrão */}

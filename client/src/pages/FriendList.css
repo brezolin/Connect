@@ -72,4 +72,11 @@
       font-size: 14px;
     }
   }
+  .message-icon {
+    transition: color 0.2s ease;
+  }
+  
+  .message-icon:hover {
+    color: #0056b3;
+  }
   

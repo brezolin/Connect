@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const http = require('http');
-const socketIo = require('socket.io');
+const { Server } = require('socket.io');
 const cors = require('cors');
 const path = require('path');
 const sequelize = require('./config/database');
@@ -16,7 +16,12 @@ const chatRoutes = require('./src/routes/chatRoutes');
 // Criar o app Express e o servidor HTTP
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server, { cors: { origin: '*' } });
+const io = new Server(server, {
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST'],
+  },
+});
 
 // Configurações gerais
 const port = process.env.PORT || 3000;
@@ -45,9 +50,9 @@ app.use((err, req, res, next) => {
 io.on('connection', (socket) => {
   console.log('Novo cliente conectado:', socket.id);
 
-  socket.on('sendMessage', (data) => {
-    // Enviar a mensagem para o destinatário
-    io.to(data.receiverId).emit('receiveMessage', data);
+  socket.on('send_message', (data) => {
+    // Enviar a mensagem para todos os conectados ou destinatário específico
+    io.emit('receive_message', data);
   });
 
   socket.on('disconnect', () => {

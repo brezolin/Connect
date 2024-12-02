@@ -1,25 +1,258 @@
+/* Estilos gerais do container */
+.chat-container {
+  display: flex;
+  height: 100vh;
+  font-family: 'Roboto', sans-serif;
+  background-color: #f4f4f9;
+  color: #333;
+}
 
-.messages {
-  height: 400px;
+/* Estilo da lista de conversas */
+.conversations-list {
+  width: 30%;
+  border-right: 1px solid #ddd;
+  padding: 10px;
+  background-color: #ffffff;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.conversations-list h3 {
+  margin-bottom: 15px;
+  font-size: 1.2em;
+  color: #555;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #007bff;
+}
+
+.conversations-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.conversations-list li {
+  cursor: pointer;
+  padding: 12px 15px;
+  border-radius: 6px;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.conversations-list li:hover {
+  background-color: #f5faff;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo do chat atual */
+.chat-window {
+  flex-grow: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  background-color: #fafafa;
+}
+
+.chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: white;
+  border-radius: 6px;
+}
+
+.chat-header h1 {
+  margin: 0;
+  font-size: 1.4em;
+}
+
+.back-button, .delete-conversation-button {
+  padding: 8px 12px;
+  background-color: #ffffff;
+  color: #007bff;
+  border: 1px solid #007bff;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.back-button:hover {
+  background-color: #e0f0ff;
+  color: #0056b3;
+}
+
+/* Área de mensagens */
+.messages-container {
+  flex-grow: 1;
   overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 15px;
+  margin-bottom: 15px;
+  background-color: #ffffff;
   display: flex;
   flex-direction: column;
 }
 
-.sent {
-  align-self: flex-end;
-  background-color: #007bff;
-  color: white;
-  padding: 10px;
-  margin: 5px;
-  border-radius: 10px;
+.message {
+  margin: 10px 0;
+  padding: 12px 18px;
+  border-radius: 12px;
+  max-width: 75%;
+  word-wrap: break-word;
+  font-size: 0.9em;
 }
 
-.received {
+.message-sent {
+  align-self: flex-end;
+  text-align: right;
+  background-color: #007bff;
+  color: white;
+  margin-left: auto; /* Empurra para a direita */
+}
+
+.message-received {
   align-self: flex-start;
+  text-align: left;
   background-color: #f1f1f1;
-  color: black;
-  padding: 10px;
-  margin: 5px;
-  border-radius: 10px;
+  color: #333;
+  margin-right: auto; /* Empurra para a esquerda */
+}
+
+
+.no-messages {
+  text-align: center;
+  color: #aaa;
+  padding: 20px;
+  font-style: italic;
+}
+
+/* Área de input */
+.message-input-container {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.message-input {
+  flex-grow: 1;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1em;
+}
+
+.send-button {
+  padding: 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1em;
+  transition: background-color 0.3s ease;
+}
+
+.send-button:hover {
+  background-color: #0056b3;
+}
+
+/* Tela inicial sem conversas */
+.empty-chat {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.empty-chat p {
+  color: #aaa;
+  font-size: 1.2em;
+  text-align: center;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .chat-container {
+    flex-direction: column;
+  }
+
+  .conversations-list {
+    width: 100%;
+    max-height: 300px;
+    overflow-y: auto;
+    border-right: none;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .chat-window {
+    width: 100%;
+    padding: 15px;
+  }
+
+  .message-input-container {
+    flex-direction: column;
+  }
+
+  .message-input,
+  .send-button {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+}
+.delete-conversation-button {
+  background-color: #ff0000;
+  color: #fff;
+}
+
+.delete-conversation-button:hover {
+  background-color: #cc0000;
+} /* Menu de Contexto */
+.context-menu {
+  position: absolute;
+  background-color: #ffffff; /* Cor de fundo do menu */
+  border: 1px solid #ccc; /* Borda sutil */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para destaque */
+  z-index: 1000; /* Garante que o menu fica acima de outros elementos */
+  padding: 10px; /* Espaçamento interno */
+  border-radius: 5px; /* Bordas arredondadas */
+  min-width: 150px; /* Largura mínima do menu */
+}
+
+/* Botão de Exclusão */
+.context-menu button {
+  background-color: #ff4d4d; /* Vermelho claro */
+  color: white; /* Texto em branco */
+  border: none; /* Remove a borda padrão */
+  padding: 8px 12px; /* Espaçamento interno */
+  cursor: pointer; /* Cursor de ponteiro */
+  border-radius: 4px; /* Bordas arredondadas */
+  font-size: 14px; /* Tamanho do texto */
+  display: block; /* Exibe o botão como um bloco */
+  width: 100%; /* O botão ocupa toda a largura do menu */
+  text-align: left; /* Alinha o texto à esquerda */
+}
+
+.context-menu button:hover {
+  background-color: #cc0000; /* Vermelho mais escuro ao passar o mouse */
+}
+
+/* Adiciona efeito ao pressionar o botão */
+.context-menu button:active {
+  background-color: #a00000; /* Vermelho ainda mais escuro */
+  transform: scale(0.95); /* Reduz ligeiramente o tamanho do botão */
+}
+
+.notification-badge {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: bold;
 }
