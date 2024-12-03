@@ -1,0 +1,65 @@
+.create-community {
+    padding: 2rem;
+    max-width: 600px;
+    margin: auto;
+    color: white;
+  }
+  
+  .create-community h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 2rem;
+    text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+  }
+  
+  .create-community form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .create-community label {
+    font-size: 1rem;
+    font-weight: 600;
+  }
+  
+  .create-community input,
+  .create-community textarea,
+  .create-community select {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(0, 243, 255, 0.2);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    color: white;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+  }
+  
+  .create-community input:focus,
+  .create-community textarea:focus,
+  .create-community select:focus {
+    outline: none;
+    border-color: var(--neon-blue);
+    box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
+  }
+  
+  .create-community button {
+    align-self: center;
+    background: linear-gradient(45deg, var(--neon-purple), var(--neon-blue));
+    color: white;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    animation: pulse 2s infinite;
+  }
+  
+  .create-community button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.4);
+  }
+  

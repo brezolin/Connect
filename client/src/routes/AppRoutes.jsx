@@ -8,6 +8,9 @@ import Navigation from '../components/Navegacao';
 import { AuthContext } from '../context/AuthContext';
 import Chat from '../pages/Chat';
 import Friends from '../pages/Friends';
+import CreateCommunity from '../components/CreateCommunity';
+import CommunitiesList from '../pages/CommunitiesList';
+import CommunityDetail from '../components/CommunityDetail';
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useContext(AuthContext);
@@ -38,6 +41,11 @@ const AppRoutes = () => {
         <Route path="/chat" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
         <Route path="/friends" element={<ProtectedRoute><Friends /></ProtectedRoute>} />
         <Route path="/chat/:friendId" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
+        <Route path="/communities" element={<ProtectedRoute><CommunitiesList /></ProtectedRoute>} />
+        <Route path="//create-community" element={<ProtectedRoute><CreateCommunity /></ProtectedRoute>} />
+        <Route path="/community/:communityId" element={<ProtectedRoute><CommunityDetail /></ProtectedRoute>} />
+
+      
 
 
         {/* Redirecionamento padrão */}

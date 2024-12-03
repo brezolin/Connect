@@ -38,4 +38,12 @@ const User = sequelize.define('User', {
   },
 });
 
+User.associate = (models) => {
+  User.hasMany(models.Community, {
+    foreignKey: 'creatorId',
+    as: 'communities',
+  });
+};
+
+
 module.exports = User;

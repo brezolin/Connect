@@ -14,6 +14,7 @@ const userRoutes = require('./src/routes/userRoutes');
 const platformRoutes = require('./src/routes/platformRoutes');
 const chatRoutes = require('./src/routes/chatRoutes');
 const newsRoutes = require('./src/routes/newsRoutes');
+const communityRoutes = require('./src/routes/communityRoutes');
 const Game = require('./src/models/Games');
 
 
@@ -41,6 +42,8 @@ app.use('/api/platforms', platformRoutes);
 app.use('/api/games', gameRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/news', newsRoutes);
+app.use('/api/communities', communityRoutes);
+
 
 // Servir arquivos estáticos
 app.use('/images', express.static(path.join(__dirname, 'src/images')));

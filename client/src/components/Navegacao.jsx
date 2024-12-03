@@ -65,6 +65,7 @@ const Navigation = () => {
         <li><Link to="/profile">Perfil</Link></li>
         <li><Link to="/friends">Amigos</Link></li>
         <li><Link to="/chat">Mensagens</Link></li>
+        <li><Link to="/communities">Comunidades</Link></li>
         <li className="notifications-container">
           <button className="notifications-icon" onClick={toggleNotifications}>
             <i className="fas fa-bell"></i> {/* Ícone de sino */}
