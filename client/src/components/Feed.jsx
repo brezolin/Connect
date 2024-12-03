@@ -68,8 +68,12 @@ const Feed = () => {
             </div>
             <div className="feed-content">
               <h2>{item.title}</h2>
-              <p>{item.description}</p>
-              <p><strong>Lançado em:</strong> {item.released}</p>
+              {/* <p>{item.description}</p> */}
+              <p><strong>Lançado em:</strong> {new Date(item.released).toLocaleDateString('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                year:'numeric',
+              })}</p>
               <p><strong>Gêneros:</strong> {Array.isArray(item.genres) ? item.genres.join(', ') : item.genres || 'Não especificado'}</p>
               <p><strong>Plataformas:</strong> {item.platforms || 'Não especificado'}</p>
               <p><strong>Avaliação:</strong> {item.rating} / 5 ({item.reviewsCount} reviews)</p>

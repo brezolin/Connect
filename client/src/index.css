@@ -18,15 +18,15 @@ body {
 
 body::before {
   content: '';
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  height: 100va; /* Garante que cubra todo o conteúdo */
-  background: linear-gradient(var(--neon-purple) 0%, var(--neon-blue));
-  opacity: 0.1;
+  height: 100dvh; /* Garante que cubra todo o conteúdo */
+  background: linear-gradient(var(--dark-bg) 0%, var(--neon-blue));
+  opacity: 0.15;
   pointer-events: none;
-  z-index: -1;
+  /* z-index: -1; */
 }
 html{
   min-height: 100%; /* Permite que o body expanda com o conteúdo */

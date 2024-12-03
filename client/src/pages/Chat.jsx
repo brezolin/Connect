@@ -163,11 +163,7 @@ const Chat = () => {
       {friendId && (
         <div className="chat-window">
           <div className="chat-header">
-            <h1>
-              Chat com{' '}
-              {conversations.find((friend) => friend.id === Number(friendId))?.username || 'Amigo'}
-            </h1>
-            <button
+          <button
               onClick={() => {
                 navigate('/chat')
                 fetchConversations()
@@ -176,6 +172,11 @@ const Chat = () => {
             >
               Voltar para conversas
             </button>
+            <h1>
+              Chat com{' '}
+              {conversations.find((friend) => friend.id === Number(friendId))?.username || 'Amigo'}
+            </h1>
+            
             <button
               onClick={deleteConversation}
               className="delete-conversation-button"
