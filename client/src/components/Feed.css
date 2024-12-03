@@ -1,24 +1,46 @@
 .feed-container {
   padding: 20px;
   font-family: Arial, sans-serif;
+  max-width: 100%; /* Permite que ocupe toda a largura */
+  margin: 0 auto;
+  background-color: #2b2b2b00;
+  border-radius: 10px;
+  overflow: hidden; /* Evita que o conteúdo ultrapasse as bordas */
 }
 
 .feed-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 20px;
+  display: flex; /* Define como um contêiner flexível */
+  gap: 20px; /* Espaçamento entre os itens */
+  overflow-x: auto; /* Permite rolagem horizontal */
+  scroll-behavior: smooth; /* Faz a rolagem ser suave */
+  padding: 20px;
+}
+
+.feed-grid::-webkit-scrollbar {
+  height: 8px; /* Define a altura da barra de rolagem */
+}
+
+.feed-grid::-webkit-scrollbar-thumb {
+  background-color: #555; /* Cor da barra de rolagem */
+  border-radius: 4px; /* Borda arredondada */
+}
+
+.feed-grid::-webkit-scrollbar-track {
+  background: #2b2b2b; /* Fundo da barra de rolagem */
 }
 
 .feed-item {
   background-color: #3b3939;
   border-radius: 10px;
+  flex: 0 0 300px; /* Largura fixa dos cards */
   overflow: hidden;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .feed-item:hover {
   transform: scale(1.05);
+  box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.2);
 }
 
 .feed-media {
@@ -44,30 +66,54 @@
 .no-trailer {
   text-align: center;
   font-style: italic;
-  color: #888;
+  color: #bbbbbb;
+  padding: 10px;
+  font-size: 14px;
 }
 
 .feed-content {
   padding: 15px;
+  color: #f1f1f1;
+}
+
+.feed-content h2 {
+  font-size: 18px;
+  margin-bottom: 10px;
 }
 
 .feed-link {
   display: inline-block;
   margin-top: 10px;
   padding: 10px 15px;
-  background-color: #3498db;
+  background-color: #ff6600;
   color: white;
   text-decoration: none;
   border-radius: 5px;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .feed-link:hover {
-  background-color: #2980b9;
+  background-color: #e55b00;
+  transform: scale(1.05);
 }
 
 .error-message {
   color: red;
   text-align: center;
   margin-top: 20px;
+}
+
+.error-container {
+  text-align: center;
+  margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+  .feed-grid {
+    gap: 15px; /* Menor espaçamento em telas pequenas */
+  }
+
+  .feed-item {
+    flex: 0 0 250px; /* Largura menor para caber melhor */
+  }
 }

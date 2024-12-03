@@ -1,4 +1,6 @@
-/* Estilos gerais do container */
+body::before{
+  z-index: -1;
+}
 .chat-container {
   display: flex;
   height: 95vh;
