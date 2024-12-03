@@ -1,6 +1,6 @@
 .releases-container {
     padding: 20px;
-    background-color: #1a1a1a;
+    background-color: #1a1a1a00;
     color: #fff;
     font-family: Arial, sans-serif;
   }
@@ -23,12 +23,17 @@
   
   .release-item {
     flex: 0 0 auto;
-    width: 150px;
+    width: 200px;
     background-color: #2a2a2a;
     border-radius: 10px;
     overflow: hidden;
     text-align: center;
     padding: 10px;
+  }
+
+  .release-item:hover {
+    background-color: #263b3f;
+    transform: scale(1.06);
   }
   
   .release-image {
@@ -48,8 +53,8 @@
   }
   
   .release-date {
-    font-size: 12px;
-    color: #aaa;
+    font-size: 20px;
+    color: #f1f1f1;
   }
   
   .release-tags {

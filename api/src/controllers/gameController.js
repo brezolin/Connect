@@ -17,7 +17,7 @@ const getUpcomingGames = async (req, res) => {
         key: RAWG_API_KEY,
         dates: `${today},${nextMonthEnd}`, // Lançamentos de hoje até o final do próximo mês
         ordering: 'released', // Ordena por data de lançamento
-        page_size: 20, // Número de jogos retornados
+        page_size: 12, // Número de jogos retornados
       },
     });
 

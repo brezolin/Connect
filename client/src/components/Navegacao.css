@@ -1,58 +1,98 @@
-/* Navigation.css */
-
+@import '@fortawesome/fontawesome-free/css/all.min.css';
 .navigation {
-  background-color: #333; /* Fundo escuro para a barra de navegação */
-  padding: 10px 20px; /* Espaçamento interno */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #282c34;
+  padding: 10px 20px;
+ 
 }
 
-.navigation ul {
-  list-style: none; /* Remove os marcadores da lista */
-  margin: 0;
-  padding: 0;
-  display: flex; /* Alinha os itens horizontalmente */
-  justify-content: space-between; /* Espaça os itens igualmente */
-  align-items: center; /* Centraliza verticalmente */
+.nav-list {
+  list-style: none;
+  display: flex;
+  gap: 20px;
 }
 
-.navigation li {
-  margin: 0 15px; /* Espaçamento entre os itens */
-}
-
-.navigation a {
-  text-decoration: none; /* Remove o sublinhado dos links */
-  color: #fff; /* Cor do texto */
-  font-weight: bold; /* Texto em negrito */
-  transition: color 0.3s; /* Suaviza a mudança de cor */
-}
-
-.navigation a:hover {
-  color: #f39c12; /* Cor do texto ao passar o mouse */
-}
-
-.navigation button {
-  background-color: #f39c12; /* Fundo do botão */
-  color: #fff; /* Cor do texto do botão */
-  border: none; /* Remove borda */
-  padding: 8px 15px; /* Espaçamento interno do botão */
-  border-radius: 5px; /* Bordas arredondadas */
-  font-weight: bold; /* Negrito no texto do botão */
-  cursor: pointer; /* Mostra o cursor de clique */
-  transition: background-color 0.3s; /* Suaviza a mudança de cor */
-}
-
-.navigation button:hover {
-  background-color: #e67e22; /* Cor do botão ao passar o mouse */
-}
-
-.notification-icon {
+.nav-list li {
   position: relative;
-  top: -2px;
-  margin-left: 5px;
-  background-color: red;
+}
+
+.nav-list a,
+.nav-list button {
+  color: white;
+  text-decoration: none;
+  font-size: 16px;
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+/* Estilo do ícone de notificações */
+.notifications-container {
+  position: relative;
+}
+
+.notifications-icon {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.notification-badg {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  background-color: rgb(228, 7, 7);
   color: white;
   border-radius: 50%;
-  padding: 4px 8px;
+  padding: 2px 6px;
   font-size: 12px;
   font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
+/* Dropdown das notificações */
+.notifications-dropdown {
+  position: absolute;
+  top: 35px;
+  right: 0;
+  background-color: rgb(196, 8, 8);
+  color: black;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  width: 300px;
+  max-height: 200px;
+  overflow-y: auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
+
+.notification-item {
+  padding: 5px 0;
+  border-bottom: 1px solid #ccc;
+}
+
+.notification-item:last-child {
+  border-bottom: none;
+}
+
+.no-notifications {
+  text-align: center;
+  padding: 10px;
+  font-size: 14px;
+}
+
+/* Botão de logout */
+.logout-button {
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  background: none;
+  border: none;
+}
