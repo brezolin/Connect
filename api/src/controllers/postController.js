@@ -1,33 +1,42 @@
-const Post = require('../models/Post');
-const Community = require('../models/Community');
+const {  Post, CommunityMember} = require('../models')
 
 // Criar um post em uma comunidade
 const createPost = async (req, res) => {
-    try {
-      console.log('Requisição recebida no backend:', req.body);
-      
-      const { title, content, authorId, communityId } = req.body;
-  
-      // Logando os valores esperados
-      console.log('Título:', title);
-      console.log('Conteúdo:', content);
-      console.log('Autor ID:', authorId);
-      console.log('Comunidade ID:', communityId);
-  
-      if (!authorId || !communityId) {
-        console.error('Erro: authorId ou communityId não fornecidos.');
-        return res.status(400).json({ error: 'Parâmetros obrigatórios ausentes.' });
-      }
-  
-      const post = await Post.create({ title, content, authorId, communityId });
-      console.log('Post criado com sucesso:', post);
-  
-      res.status(201).json(post);
-    } catch (error) {
-      console.error('Erro ao criar post:', error);
-      res.status(500).json({ error: 'Erro ao criar post.' });
+  try {
+    const  {communityId } = req.params; // Certifique-se de que este valor está sendo extraído corretamente
+    const { title, content } = req.body;
+    const userId = req.user.id; // Usuário autenticado
+    
+    console.log('Community ID recebido:', communityId);
+
+    if (!communityId) {
+      return res.status(400).json({ error: 'Community ID não fornecido.' });
     }
-  };
+
+    // Verifique se o usuário é membro da comunidade
+    const isMember = await CommunityMember.findOne({
+      where: { userId, communityId },
+    });
+
+    if (!isMember) {
+      return res.status(403).json({ error: 'Você não é membro desta comunidade.' });
+    }
+
+    // Criação do post
+    const post = await Post.create({
+      title,
+      content,
+      authorId: userId,
+      communityId,
+    });
+
+    res.status(201).json(post);
+  } catch (error) {
+    console.error('Erro ao criar post:', error);
+    res.status(500).json({ error: 'Erro ao criar post.' });
+  }
+};
+
   
 
 // Obter posts de uma comunidade

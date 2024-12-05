@@ -1,7 +1,6 @@
-const Community = require('../models/Community');
-const UserCommunity = require('../models/UserCommunity');
-const Post = require('../models/Post'); 
-const { User } = require('../models');
+const { User, Community, Post, CommunityMember} = require('../models')
+
+
 
 exports.createCommunity = async (req, res) => {
   try {
@@ -48,7 +47,7 @@ exports.getCommunityById = async (req, res) => {
         {
           model: User,
           as: 'members',
-          through: { attributes: [] }, // Não retorna os atributos da tabela intermediária
+          through: { attributes: [] }, 
         },
         {
           model: User,
@@ -79,7 +78,7 @@ exports.joinCommunity = async (req, res) => {
       return res.status(400).json({ error: 'Parâmetros inválidos.' });
     }
 
-    const [membership, created] = await UserCommunity.findOrCreate({
+    const [membership, created] = await CommunityMember.findOrCreate({
       where: { userId, communityId },
     });
 

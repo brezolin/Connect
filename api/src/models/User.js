@@ -39,18 +39,20 @@ const User = sequelize.define('User', {
 });
 
 User.associate = (models) => {
+  // Comunidades criadas pelo usuário
   User.hasMany(models.Community, {
     foreignKey: 'creatorId',
-    as: 'communities',
+    as: 'createdCommunities', // Alias único para as comunidades criadas
   });
 
-  User.belongsToMany(Community, {
-    through: 'UserCommunity',
-    as: 'communities',
+  // Comunidades que o usuário participa
+  User.belongsToMany(models.Community, {
+    through: 'CommunityMember', // Tabela intermediária
+    as: 'joinedCommunities', // Alias para comunidades que o usuário participa
     foreignKey: 'userId',
   });
-  
 };
+
 
 
 module.exports = User;

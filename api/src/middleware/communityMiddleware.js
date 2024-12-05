@@ -1,11 +1,12 @@
-const UserCommunity = require('../models/UserCommunity');
+const { CommunityMember } = require('../models');
+
 
 const isMember = async (req, res, next) => {
   const { id: communityId } = req.params; // Corrigido para `id`
   const userId = req.user.id;
 
   try {
-    const membership = await UserCommunity.findOne({
+    const membership = await CommunityMember.findOne({
       where: {
         userId,
         communityId,

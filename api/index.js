@@ -15,6 +15,8 @@ const platformRoutes = require('./src/routes/platformRoutes');
 const chatRoutes = require('./src/routes/chatRoutes');
 const newsRoutes = require('./src/routes/newsRoutes');
 const communityRoutes = require('./src/routes/communityRoutes');
+const PostRoutes = require('./src/routes/PostRoutes');
+
 const Game = require('./src/models/Games');
 
 
@@ -43,6 +45,7 @@ app.use('/api/games', gameRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/news', newsRoutes);
 app.use('/api/communities', communityRoutes);
+app.use('/api/posts', PostRoutes);
 
 
 // Servir arquivos estáticos
@@ -73,7 +76,7 @@ io.on('connection', (socket) => {
 
 // Sincronizar o Sequelize e iniciar o servidor
 sequelize
-  .sync({ alter: true }) // Use alter para ajustar o banco sem perder dados
+  .sync({ alter: false }) // Use alter para ajustar o banco sem perder dados
   .then(() => {
     console.log('Sincronização com o banco de dados concluída.');
     console.log('Verificando e atualizando dados iniciais...');

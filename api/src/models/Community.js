@@ -6,20 +6,20 @@ class Community extends Model {
     // Associação com o modelo User (criador da comunidade)
     Community.belongsTo(models.User, {
       foreignKey: 'creatorId',
-      as: 'creator',
+      as: 'creator', // Alias único para o criador
     });
-
+  
     // Associação com o modelo User (membros da comunidade)
     Community.belongsToMany(models.User, {
-      through: 'UserCommunity',
-      as: 'members',
+      through: 'CommunityMember', // Tabela intermediária
+      as: 'members', // Alias para os membros
       foreignKey: 'communityId',
     });
-
+  
     // Associação com o modelo Post
     Community.hasMany(models.Post, {
       foreignKey: 'communityId',
-      as: 'posts',
+      as: 'posts', // Alias único para os posts
     });
   }
 }

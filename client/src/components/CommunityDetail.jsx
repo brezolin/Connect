@@ -20,7 +20,7 @@ const CommunityDetail = () => {
       setLoading(false);
       return;
     }
-
+  
     try {
       const response = await axios.get(
         `http://localhost:3000/api/communities/${communityId}`,
@@ -30,9 +30,14 @@ const CommunityDetail = () => {
           },
         }
       );
+  
       setCommunity(response.data);
       setPosts(response.data.posts || []);
-      setIsMember(response.data.isMember || false);
+  
+      // Verifica se o usuário é membro da comunidade
+      const userId = JSON.parse(atob(token.split('.')[1])).id; // Decodifica o ID do usuário do token
+      const isUserMember = response.data.members.some((member) => member.id === userId);
+      setIsMember(isUserMember);
     } catch (err) {
       setError(
         err.response?.status === 401
@@ -48,14 +53,13 @@ const CommunityDetail = () => {
   const handlePostSubmit = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem('token');
-    if (!token) {
-      alert('Você precisa estar autenticado para postar.');
-      return;
-    }
-
+    
     try {
+      console.log('Token:', token); // Adicione este log para verificar o token
+      
+
       const response = await axios.post(
-        `http://localhost:3000/api/communities/${communityId}/posts`,
+        `http://localhost:3000/api/posts/${communityId}/posts`,
         {
           title: 'Novo Post',
           content: newPost,
@@ -70,10 +74,13 @@ const CommunityDetail = () => {
       setNewPost('');
       alert('Post criado com sucesso!');
     } catch (err) {
-      alert('Erro ao criar o post. Tente novamente mais tarde.');
-      console.error(err);
+      console.error('Erro ao criar o post:', err.response?.data || err.message);
+      alert(
+        err.response?.data?.error || 'Erro ao criar o post. Tente novamente mais tarde.'
+      );
     }
   };
+
 
   // Função para entrar na comunidade
   const handleJoinCommunity = async () => {
