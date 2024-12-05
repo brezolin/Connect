@@ -43,6 +43,13 @@ User.associate = (models) => {
     foreignKey: 'creatorId',
     as: 'communities',
   });
+
+  User.belongsToMany(Community, {
+    through: 'UserCommunity',
+    as: 'communities',
+    foreignKey: 'userId',
+  });
+  
 };
 
 

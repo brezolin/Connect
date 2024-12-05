@@ -12,22 +12,37 @@ const CreateCommunity = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
+    const token = localStorage.getItem('token'); // Recupera o token armazenado
+    if (!token) {
+      alert('Você precisa estar autenticado para criar uma comunidade.');
+      return;
+    }
+  
     try {
-      await axios.post('http://localhost:3000/api/communities/create', {
-        name,
-        description,
-        type,
-        associatedGame,
-        creatorId: localStorage.getItem('user'),
-      });
+      const response = await axios.post(
+        'http://localhost:3000/api/communities/create',
+        {
+          name,
+          type,
+          description,
+          associatedGame,
+          creatorId: localStorage.getItem('user'),
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Adiciona o token no cabeçalho
+          },
+        }
+      );
       alert('Comunidade criada com sucesso!');
       navigate('/communities');
     } catch (error) {
       console.error('Erro ao criar comunidade:', error);
-      alert('Erro ao criar comunidade.');
+      alert('Erro ao criar comunidade. Tente novamente mais tarde.');
     }
   };
+  
 
   return (
     <div className="create-community">

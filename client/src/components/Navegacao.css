@@ -2,15 +2,18 @@
 .navigation {
   display: flex;
   justify-content: center;
-  align-items: center;
   background-color: #282c3400;
   padding: 10px 20px;
  
 }
 
 .nav-list {
-  list-style: none;
   display: flex;
+  align-items: center;
+
+  justify-content: center;
+  list-style: none;
+ 
   gap: 20%;
 }
 

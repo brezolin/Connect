@@ -1,7 +1,21 @@
 const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../../config/database');
 
-class Post extends Model {}
+class Post extends Model {
+  static associate(models) {
+    // Associação com o modelo User
+    Post.belongsTo(models.User, {
+      foreignKey: 'authorId',
+      as: 'author',
+    });
+
+    // Associação com o modelo Community
+    Post.belongsTo(models.Community, {
+      foreignKey: 'communityId',
+      as: 'community',
+    });
+  }
+}
 
 Post.init(
   {
@@ -43,18 +57,5 @@ Post.init(
     timestamps: true, // Adiciona createdAt e updatedAt automaticamente
   }
 );
-
-// Associações (opcional, dependendo da sua aplicação)
-Post.associate = (models) => {
-  Post.belongsTo(models.User, {
-    foreignKey: 'authorId',
-    as: 'author',
-  });
-
-  Post.belongsTo(models.Community, {
-    foreignKey: 'communityId',
-    as: 'community',
-  });
-};
 
 module.exports = Post;

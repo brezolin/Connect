@@ -1,8 +1,30 @@
-const { DataTypes } = require('sequelize');
+const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../../config/database');
 
-const Community = sequelize.define(
-  'Community',
+class Community extends Model {
+  static associate(models) {
+    // Associação com o modelo User (criador da comunidade)
+    Community.belongsTo(models.User, {
+      foreignKey: 'creatorId',
+      as: 'creator',
+    });
+
+    // Associação com o modelo User (membros da comunidade)
+    Community.belongsToMany(models.User, {
+      through: 'UserCommunity',
+      as: 'members',
+      foreignKey: 'communityId',
+    });
+
+    // Associação com o modelo Post
+    Community.hasMany(models.Post, {
+      foreignKey: 'communityId',
+      as: 'posts',
+    });
+  }
+}
+
+Community.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -37,17 +59,11 @@ const Community = sequelize.define(
     },
   },
   {
+    sequelize,
+    modelName: 'Community',
     tableName: 'Communities',
     timestamps: true, // Inclui os campos createdAt e updatedAt
   }
 );
-
-// Definindo as associações no modelo
-Community.associate = (models) => {
-  Community.belongsTo(models.User, {
-    foreignKey: 'creatorId',
-    as: 'creator',
-  });
-};
 
 module.exports = Community;

@@ -7,17 +7,21 @@ const {
   updateCommunity,
   deleteCommunity,
 } = require('../controllers/communityController');
-
 const {
   createPost,
   getPostsByCommunity,
   updatePost,
   deletePost,
 } = require('../controllers/postController');
+const isAuthenticated = require('../middleware/authMiddleware');
+const { isMember } = require('../middleware/communityMiddleware');
 
 const router = express.Router();
 
-// Rotas de Comunidade
+// Proteger todas as rotas com autenticação
+router.use(isAuthenticated);
+
+// Rotas de Comunidades
 router.post('/create', createCommunity);
 router.get('/', getCommunities);
 router.get('/:id', getCommunityById);
@@ -26,9 +30,9 @@ router.put('/:id', updateCommunity);
 router.delete('/:id', deleteCommunity);
 
 // Rotas de Posts
-router.post('/:id/posts', createPost); // Criar um post em uma comunidade
-router.get('/:id/posts', getPostsByCommunity); // Obter posts de uma comunidade
-router.put('/posts/:postId', updatePost); // Atualizar um post
-router.delete('/posts/:postId', deletePost); // Excluir um post
+router.post('/:id/posts', isMember, createPost);
+router.get('/:id/posts', getPostsByCommunity);
+router.put('/posts/:postId', isMember, updatePost);
+router.delete('/posts/:postId', isMember, deletePost);
 
 module.exports = router;

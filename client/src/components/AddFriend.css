@@ -1,116 +1,132 @@
 /* Container principal */
 .add-friend-container {
-    max-width: 600px;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: #1e1e2f;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    color: white;
-    font-family: 'Arial', sans-serif;
-  }
-  
-  /* Campo de entrada de busca */
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 1rem;
+  border: 1px solid rgba(0, 243, 255, 0.2);
+  box-shadow: 0 4px 8px rgba(0, 243, 255, 0.1);
+  color: white;
+  font-family: 'Arial', sans-serif;
+}
+
+/* Campo de entrada de busca */
+.add-friend-container input {
+  width: calc(100% - 110px);
+  padding: 10px;
+  margin-right: 10px;
+  border: 1px solid rgba(0, 243, 255, 0.2);
+  border-radius: 5px;
+  background-color: rgba(255, 255, 255, 0.05);
+  color: white;
+  font-size: 16px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.add-friend-container input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.add-friend-container input:focus {
+  outline: none;
+  border-color: var(--neon-blue);
+  box-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
+}
+
+/* Botão de busca */
+.add-friend-container button {
+  background: linear-gradient(45deg, var(--neon-purple), var(--neon-blue));
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.add-friend-container button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+}
+
+/* Mensagem de erro */
+.add-friend-error {
+  color: #ff4d4d;
+  margin-top: 10px;
+  font-size: 14px;
+  text-align: center;
+}
+
+/* Lista de resultados */
+.search-results {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
+}
+
+.search-results li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 243, 255, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.search-results li:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+}
+
+.search-results li strong {
+  color: var(--neon-blue);
+}
+
+/* Botão adicionar amigo */
+.search-results li button {
+  background: linear-gradient(45deg, var(--neon-purple), var(--neon-blue));
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.search-results li button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+}
+
+/* Mensagem de nenhum usuário encontrado */
+.no-results-message {
+  color: rgba(255, 255, 255, 0.5);
+  font-style: italic;
+  text-align: center;
+  margin-top: 10px;
+}
+
+/* Responsividade */
+@media (max-width: 480px) {
   .add-friend-container input {
-    width: calc(100% - 100px);
-    padding: 10px;
-    margin-right: 10px;
-    border: none;
-    border-radius: 5px;
-    background-color: #2a2a3c;
-    color: white;
-    font-size: 16px;
+    width: calc(100% - 90px);
+    font-size: 14px;
   }
-  
-  .add-friend-container input::placeholder {
-    color: #aaa;
-  }
-  
-  /* Botão de busca */
+
   .add-friend-container button {
-    background-color: #4caf50;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background 0.3s ease;
-  }
-  
-  .add-friend-container button:hover {
-    background-color: #45a049;
-  }
-  
-  /* Mensagem de erro */
-  .add-friend-error {
-    color: #ff4d4d;
-    margin-top: 10px;
     font-size: 14px;
-    text-align: center;
+    padding: 8px 10px;
   }
-  
-  /* Lista de resultados */
-  .search-results {
-    list-style: none;
-    padding: 0;
-    margin-top: 20px;
-  }
-  
-  .search-results li {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #292945;
-    padding: 10px;
-    border-radius: 5px;
-    margin-bottom: 10px;
-    color: white;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  }
-  
-  .search-results li strong {
-    color: #4caf50;
-  }
-  
+
   .search-results li button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: background 0.3s ease;
+    font-size: 12px;
+    padding: 5px 8px;
   }
-  
-  .search-results li button:hover {
-    background-color: #0056b3;
-  }
-  
-  /* Mensagem de nenhum usuário encontrado */
-  .no-results-message {
-    color: #aaa;
-    font-style: italic;
-    text-align: center;
-    margin-top: 10px;
-  }
-  
-  /* Responsividade */
-  @media (max-width: 480px) {
-    .add-friend-container input {
-      width: calc(100% - 90px);
-      font-size: 14px;
-    }
-  
-    .add-friend-container button {
-      font-size: 14px;
-      padding: 8px 10px;
-    }
-  
-    .search-results li button {
-      font-size: 12px;
-      padding: 5px 8px;
-    }
-  }
-  
+}

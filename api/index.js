@@ -73,15 +73,18 @@ io.on('connection', (socket) => {
 
 // Sincronizar o Sequelize e iniciar o servidor
 sequelize
-  .sync()
+  .sync({ alter: true }) // Use alter para ajustar o banco sem perder dados
   .then(() => {
-    console.log('Conectado ao banco de dados MySQL!');
-    checkAndUpdateData();
+    console.log('Sincronização com o banco de dados concluída.');
+    console.log('Verificando e atualizando dados iniciais...');
+    return checkAndUpdateData(); // Certifique-se de que a função retorna uma Promise, se necessário
+  })
+  .then(() => {
     server.listen(port, () => {
       console.log(`Servidor rodando na porta ${port}`);
-      
     });
   })
   .catch((err) => {
-    console.error('Erro ao sincronizar com o banco de dados:', err);
+    console.error('Erro ao sincronizar ou iniciar o servidor:', err);
   });
+

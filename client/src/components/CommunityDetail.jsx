@@ -8,65 +8,111 @@ const CommunityDetail = () => {
   const [community, setCommunity] = useState(null);
   const [posts, setPosts] = useState([]);
   const [newPost, setNewPost] = useState('');
+  const [isMember, setIsMember] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchCommunity = async () => {
-      try {
-        const response = await axios.get(`http://localhost:3000/api/communities/${communityId}`);
-        setCommunity(response.data);
-        setPosts(response.data.posts || []);
-        console.log(response.dat)
-      } catch (error) {
-        console.error('Erro ao carregar comunidade:', error);
-      }
-    };
-    fetchCommunity();
-  }, [communityId]);
+  // Função para buscar detalhes da comunidade
+  const fetchCommunity = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setError('Token não encontrado. Faça login novamente.');
+      setLoading(false);
+      return;
+    }
 
+    try {
+      const response = await axios.get(
+        `http://localhost:3000/api/communities/${communityId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setCommunity(response.data);
+      setPosts(response.data.posts || []);
+      setIsMember(response.data.isMember || false);
+    } catch (err) {
+      setError(
+        err.response?.status === 401
+          ? 'Você não está autenticado. Faça login novamente.'
+          : 'Erro ao carregar comunidade. Tente novamente mais tarde.'
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Função para criar um post
   const handlePostSubmit = async (e) => {
     e.preventDefault();
-  
-    console.log('Tentando criar um novo post...');
-    console.log('Dados enviados:', {
-      title: 'Novo Post',
-      content: newPost,
-      authorId: localStorage.getItem('user'),
-      communityId: communityId
-    });
-  
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('Você precisa estar autenticado para postar.');
+      return;
+    }
+
     try {
       const response = await axios.post(
         `http://localhost:3000/api/communities/${communityId}/posts`,
         {
           title: 'Novo Post',
           content: newPost,
-          authorId: localStorage.getItem('user'),
-          communityId: communityId
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
-  
-      console.log('Resposta da API:', response.data);
-  
-      // Atualiza os posts no estado
       setPosts((prevPosts) => [...prevPosts, response.data]);
       setNewPost('');
-  
-      console.log('Post criado e estado atualizado com sucesso.');
-    } catch (error) {
-      console.error('Erro ao criar post:', error);
-  
-      if (error.response) {
-        // Resposta da API com status de erro
-        console.error('Erro na resposta da API:', error.response.data);
-      } else if (error.request) {
-        // Nenhuma resposta do servidor
-        console.error('Nenhuma resposta do servidor. Request:', error.request);
-      } else {
-        // Erro ao configurar a requisição
-        console.error('Erro ao configurar a requisição:', error.message);
-      }
+      alert('Post criado com sucesso!');
+    } catch (err) {
+      alert('Erro ao criar o post. Tente novamente mais tarde.');
+      console.error(err);
     }
   };
+
+  // Função para entrar na comunidade
+  const handleJoinCommunity = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('Você precisa estar autenticado para entrar na comunidade.');
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        `http://localhost:3000/api/communities/${communityId}/join`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setIsMember(true);
+      alert('Você entrou na comunidade com sucesso!');
+    } catch (err) {
+      alert('Erro ao entrar na comunidade. Tente novamente mais tarde.');
+      console.error(err);
+    }
+  };
+
+  // Carregar dados da comunidade ao montar o componente
+  useEffect(() => {
+    fetchCommunity();
+  }, [communityId]);
+
+  if (loading) {
+    return <p>Carregando comunidade...</p>;
+  }
+
+  if (error) {
+    return <p className="error">{error}</p>;
+  }
 
   return (
     <div className="community-detail">
@@ -74,27 +120,37 @@ const CommunityDetail = () => {
         <>
           <h1>{community.name}</h1>
           <p>{community.description}</p>
-          <h2>Posts</h2>
-          <ul>
-            {posts.map((post) => (
-              <li key={post.id} className="post-card">
-                <h3>{post.title}</h3>
-                <p>{post.content}</p>
-              </li>
-            ))}
-          </ul>
-          <form onSubmit={handlePostSubmit}>
-            <textarea
-              value={newPost}
-              onChange={(e) => setNewPost(e.target.value)}
-              placeholder="Escreva um post..."
-              required
-            />
-            <button type="submit">Postar</button>
-          </form>
+          {!isMember ? (
+            <button onClick={handleJoinCommunity}>Entrar na Comunidade</button>
+          ) : (
+            <>
+              <h2>Posts</h2>
+              {posts.length === 0 ? (
+                <p>Nenhum post disponível.</p>
+              ) : (
+                <ul>
+                  {posts.map((post) => (
+                    <li key={post.id} className="post-card">
+                      <h3>{post.title}</h3>
+                      <p>{post.content}</p>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <form onSubmit={handlePostSubmit}>
+                <textarea
+                  value={newPost}
+                  onChange={(e) => setNewPost(e.target.value)}
+                  placeholder="Escreva um post..."
+                  required
+                />
+                <button type="submit">Postar</button>
+              </form>
+            </>
+          )}
         </>
       ) : (
-        <p>Carregando comunidade...</p>
+        <p>Comunidade não encontrada.</p>
       )}
     </div>
   );
