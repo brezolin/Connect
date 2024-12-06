@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './UserProfile.css'; // Importando o arquivo de estilos
+import ProfilePictureUpload from '../components/uploudPictureProfile';
 
 const Profile = () => {
   const [user, setUser] = useState(null);
@@ -14,10 +15,24 @@ const Profile = () => {
   const [showAddGame, setShowAddGame] = useState(false);
   const userId = localStorage.getItem('user');
 
+ 
+
+
+
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/api/users/${userId}`);
+        const token = localStorage.getItem('token');
+  if (!token) {
+    setError('Token não encontrado. Faça login novamente.');
+    setLoading(false);
+    return;
+  }
+        const response = await axios.get(`http://localhost:3000/api/users/${userId}`,
+           {
+             headers: {
+              Authorization: `Bearer ${token}`,
+            }})
         setUser(response.data);
         console.log(response.data)
         setLoading(false);
@@ -64,21 +79,22 @@ const Profile = () => {
     return () => clearTimeout(timeoutId);
   }, [searchTerm]);
 
-  const handleAddPlatform = async () => {
-    if (!selectedPlatform) return;
-
+  const handleAddPlatform = async (platformName) => {
+    if (!platformName) return;
+  
     try {
       const response = await axios.post(`http://localhost:3000/api/users/${userId}/platforms`, {
-        platform: selectedPlatform,
+        platform: platformName,
       });
-
+  
       if (response.status === 200) {
         setUser((prev) => ({
           ...prev,
-          platforms: [...(prev.platforms || []), availablePlatforms.find((p) => p.name === selectedPlatform)],
+          platforms: [
+            ...(prev.platforms || []),
+            availablePlatforms.find((p) => p.name === platformName),
+          ],
         }));
-        setSelectedPlatform('');
-        setShowAddPlatform(false);
       } else {
         console.error('Erro ao adicionar plataforma: Resposta inesperada do servidor.');
       }
@@ -86,6 +102,7 @@ const Profile = () => {
       console.error('Erro ao adicionar plataforma:', err.message);
     }
   };
+  
 
   const handleAddGame = async (game) => {
     try {
@@ -126,6 +143,7 @@ const Profile = () => {
   const handleRemoveGame = async (gameName) => {
     try {
       await axios.delete(`http://localhost:3000/api/users/${userId}/games`, {
+        
         data: { game: gameName },
       });
       setUser((prev) => ({
@@ -162,8 +180,19 @@ const Profile = () => {
 
   return (
     <div className="profile-container">
-      <h1 className="profile-title">Bem-vindo, {user.username}!</h1>
-      <div className="profile-card">
+      <div className="profile-wrapper">
+      <div className="profile-header">
+  <div className="profile-info">
+    <img
+      src={`http://localhost:3000/${user.profilePicture}`}
+      alt="Foto de perfil"
+      className="profile-picture"
+    />
+    <h1 className="profile-title">Bem-vindo, {user.username}!</h1>
+  </div>
+  <ProfilePictureUpload />
+</div>
+
         <div className="profile-section">
           <h3>Plataformas</h3>
           <div className="platforms-grid">
@@ -180,18 +209,19 @@ const Profile = () => {
                   alt={platform.name || 'Plataforma'}
                   className="platform-image"
                 />
-                <div className="platform-details">
-                  <p>{platform.name}</p>
-                </div>
+                <p>{platform.name}</p>
               </div>
             ))}
-            <div className="platform-card add-card" onClick={() => setShowAddPlatform(true)}>
+            <div 
+              className="platform-card add-card" 
+              onClick={() => setShowAddPlatform(true)}
+            >
               <div className="add-icon">+</div>
               <p>Adicionar Plataforma</p>
             </div>
           </div>
         </div>
-  
+
         <div className="profile-section">
           <h3>Jogos Favoritos</h3>
           <div className="games-grid">
@@ -203,80 +233,102 @@ const Profile = () => {
                 >
                   &times;
                 </button>
-                <img src={game.image || '/images/default_game.png'} alt={game.name} className="game-image" />
-                <div className="game-details">
-                  <p>{game.name}</p>
-                </div>
+                <img 
+                  src={game.image || '/images/default_game.png'} 
+                  alt={game.name} 
+                  className="game-image" 
+                />
+                <p>{game.name}</p>
               </div>
             ))}
-            <div className="game-card add-card" onClick={() => setShowAddGame(true)}>
+            <div 
+              className="game-card add-card" 
+              onClick={() => setShowAddGame(true)}
+            >
               <div className="add-icon">+</div>
               <p>Adicionar Jogo</p>
             </div>
           </div>
         </div>
       </div>
-  
-      {/* Modal para Adicionar Plataforma */}
-      <Modal
-        isOpen={showAddPlatform}
-        title="Selecione uma Plataforma"
-        onClose={() => setShowAddPlatform(false)}
-      >
-        <div className="platforms-grid">
-          {availablePlatforms.map((platform) => (
-            <div
-              key={platform.id}
-              className="platform-card"
-              onClick={() => {
-                setSelectedPlatform(platform.name);
-                handleAddPlatform();
-                setShowAddPlatform(false);
-              }}
-            >
-              <img
-                src={platform.image_url ? `http://localhost:3000${platform.image_url}` : '/images/default_platform.png'}
-                alt={platform.name}
-                className="platform-image"
-              />
-              <p>{platform.name}</p>
+
+      {/* Platforms Modal */}
+      {showAddPlatform && (
+        <div className="modal-overlay" onClick={() => setShowAddPlatform(false)}>
+          <div 
+            className="modal-content" 
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="modal-header">
+              <h2>Selecione uma Plataforma</h2>
+              <button onClick={() => setShowAddPlatform(false)}>Fechar</button>
             </div>
-          ))}
-        </div>
-      </Modal>
-  
-      {/* Modal para Adicionar Jogos */}
-      <Modal
-        isOpen={showAddGame}
-        title="Busque um Jogo"
-        onClose={() => setShowAddGame(false)}
-      >
-        <input
-          type="text"
-          placeholder="Buscar jogos..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="input"
-        />
-        <div className="games-grid">
-          {searchResults.map((game) => (
-            <div
-              key={game.id}
-              className="game-card"
-              onClick={() => {
-                handleAddGame(game);
-                setShowAddGame(false);
-              }}
-            >
-              <img src={game.image || '/images/default_game.png'} alt={game.name} className="game-image" />
-              <p>{game.name}</p>
+            <div className="platforms-grid">
+              {availablePlatforms.map((platform) => (
+                <div
+                  key={platform.id}
+                  className="platform-card"
+                  onClick={() => {
+                    handleAddPlatform(platform.name);
+                    setShowAddPlatform(false);
+                  }}
+                >
+                  <img
+                    src={platform.image_url ? `http://localhost:3000${platform.image_url}` : '/images/default_platform.png'}
+                    alt={platform.name}
+                    className="platform-image"
+                  />
+                  <p>{platform.name}</p>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
         </div>
-      </Modal>
+      )}
+
+      {/* Games Modal */}
+      {showAddGame && (
+        <div className="modal-overlay" onClick={() => setShowAddGame(false)}>
+          <div 
+            className="modal-content" 
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="modal-header">
+              <h2>Busque um Jogo</h2>
+              <button onClick={() => setShowAddGame(false)}>Fechar</button>
+            </div>
+            <input
+              type="text"
+              placeholder="Buscar jogos..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="modal-search-input"
+            />
+            <div className="games-grid">
+              {searchResults.map((game) => (
+                <div
+                  key={game.id}
+                  className="game-card"
+                  onClick={() => {
+                    handleAddGame(game);
+                    setShowAddGame(false);
+                  }}
+                >
+                  <img 
+                    src={game.image || '/images/default_game.png'} 
+                    alt={game.name} 
+                    className="game-image" 
+                  />
+                  <p>{game.name}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
+};
   
-};  
 
 export default Profile;

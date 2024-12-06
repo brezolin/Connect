@@ -10,7 +10,19 @@ const AddFriend = ({ userId }) => {
 
     const handleSearch = async () => {
         try {
-            const response = await axios.get(`http://localhost:3000/api/users/search?query=${searchTerm}`);
+
+            const token = localStorage.getItem('token');
+            if (!token) {
+                setError('Token não encontrado. Faça login novamente.');
+                setLoading(false);
+                return;
+            }
+
+            const response = await axios.get(`http://localhost:3000/api/users/search?query=${searchTerm}`,{
+                headers: {
+                 Authorization: `Bearer ${token}`,
+               }});
+               
             console.log('Busca:', searchTerm);
             console.log('Resposta da API:', response.data);
             setSearchResults(response.data.users); // Atualize com os usuários

@@ -58,7 +58,10 @@ const getUserProfile = async (req, res) => {
         image_url: platform.image_url,
       })),
       favorite_games: favoriteGamesWithImages,
+      friends: user.friends, // Retornar os amigos sem as informações de nome, email e ID
+      profilePicture: user.profilePicture
     });
+
   } catch (error) {
     console.error('Erro ao buscar perfil do usuário:', error.message);
     res.status(500).json({ error: 'Erro ao buscar dados do servidor.' });
@@ -319,6 +322,31 @@ const buscaTodosUsuarios = async (req, res) => {
   } catch (error) {
     console.error('Erro ao buscar usuários:', error.message);
     res.status(500).json({ error: 'Erro ao buscar usuários.' });
+  };
+};
+
+const updateProfilePicture = async (req, res) => {
+  try {
+    const userId = req.user.id; // Obtém o ID do usuário autenticado
+    const user = await User.findByPk(userId);
+    console.log(user)
+    const profilePicturePath = `images/${req.file.filename}`;
+    await User.update({ profilePicture: profilePicturePath }, { where: { id: userId } });
+
+  console.log('Caminho da imagem:', profilePicturePath);
+
+
+    if (!profilePicturePath) {
+      return res.status(400).json({ error: 'Nenhuma imagem foi enviada.' });
+    }
+
+    // Atualiza o caminho da foto no banco de dados
+    await User.update({ profilePicture: profilePicturePath }, { where: { id: userId } });
+
+    res.status(200).json({ message: 'Foto de perfil atualizada com sucesso.', profilePicture: profilePicturePath });
+  } catch (error) {
+    console.error('Erro ao atualizar foto de perfil:', error);
+    res.status(500).json({ error: 'Erro ao atualizar foto de perfil.' });
   }
 };
 
@@ -332,6 +360,7 @@ module.exports = {
   getUserFriends,
   addFriends,
   buscaFriends,
-  buscaTodosUsuarios
+  buscaTodosUsuarios,
+  updateProfilePicture,
 };
 

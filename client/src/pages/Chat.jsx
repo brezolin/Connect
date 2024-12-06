@@ -29,7 +29,18 @@ const Chat = () => {
   // Buscar todas as conversas do usuário
   const fetchConversations = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/api/chat/conversations/${userId}`);
+
+      const token = localStorage.getItem('token');
+            if (!token) {
+                setError('Token não encontrado. Faça login novamente.');
+                setLoading(false);
+                return;
+            }
+
+      const response = await axios.get(`http://localhost:3000/api/chat/conversations/${userId}`,{
+        headers: {
+         Authorization: `Bearer ${token}`,
+       }});
       setConversations(response.data); // Atualiza a lista de conversas
     } catch (error) {
       console.error('Erro ao buscar conversas:', error);

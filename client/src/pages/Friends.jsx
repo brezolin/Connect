@@ -16,9 +16,19 @@ const FriendsList = () => {
       setError('Erro ao carregar ID do usuário.');
       return;
     }
+    const token = localStorage.getItem('token');
+  if (!token) {
+    setError('Token não encontrado. Faça login novamente.');
+    setLoading(false);
+    return;
+  }
 
     axios
-      .get(`http://localhost:3000/api/users/${userId}/friends`)
+      .get(`http://localhost:3000/api/users/${userId}/friends`,{
+        headers: {
+         Authorization: `Bearer ${token}`,
+       }})
+       
       .then((response) => {
         setFriends(response.data);
       })

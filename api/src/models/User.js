@@ -36,6 +36,10 @@ const User = sequelize.define('User', {
     type: DataTypes.JSON, // Armazena uma lista de IDs de amigos
     allowNull: true,
   },
+  profilePicture: {
+    type: DataTypes.STRING, // Caminho da foto no servidor
+    allowNull: true,
+  },
 });
 
 User.associate = (models) => {
