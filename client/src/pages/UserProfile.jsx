@@ -14,8 +14,13 @@ const Profile = () => {
   const [showAddPlatform, setShowAddPlatform] = useState(false);
   const [showAddGame, setShowAddGame] = useState(false);
   const userId = localStorage.getItem('user');
+  const [friends, setFriends] = useState([]); // Lista de amigos
+  const [searchFriend, setSearchFriend] = useState(''); // Campo de busca para amigos
+  const [friendResults, setFriendResults] = useState([]); // Resultados da busca de amigos
+  const [showAddFriend, setShowAddFriend] = useState(false); // Controle do modal de amigos
 
- 
+
+
 
 
 
@@ -23,16 +28,17 @@ const Profile = () => {
     const fetchUserProfile = async () => {
       try {
         const token = localStorage.getItem('token');
-  if (!token) {
-    setError('Token não encontrado. Faça login novamente.');
-    setLoading(false);
-    return;
-  }
+        if (!token) {
+          setError('Token não encontrado. Faça login novamente.');
+          setLoading(false);
+          return;
+        }
         const response = await axios.get(`http://localhost:3000/api/users/${userId}`,
-           {
-             headers: {
+          {
+            headers: {
               Authorization: `Bearer ${token}`,
-            }})
+            }
+          })
         setUser(response.data);
         console.log(response.data)
         setLoading(false);
@@ -44,6 +50,29 @@ const Profile = () => {
 
     fetchUserProfile();
   }, [userId]);
+
+  useEffect(() => {
+    const fetchFriends = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) return;
+
+        const response = await axios.get(`http://localhost:3000/api/users/${userId}/friends`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setFriends(response.data);
+        console.log(response.data);
+      } catch (err) {
+        console.error('Erro ao buscar amigos:', err.message);
+      }
+    };
+
+    fetchFriends();
+  }, [userId]);
+
+
+
+
 
   useEffect(() => {
     const fetchAvailablePlatforms = async () => {
@@ -81,12 +110,12 @@ const Profile = () => {
 
   const handleAddPlatform = async (platformName) => {
     if (!platformName) return;
-  
+
     try {
       const response = await axios.post(`http://localhost:3000/api/users/${userId}/platforms`, {
         platform: platformName,
       });
-  
+
       if (response.status === 200) {
         setUser((prev) => ({
           ...prev,
@@ -102,7 +131,38 @@ const Profile = () => {
       console.error('Erro ao adicionar plataforma:', err.message);
     }
   };
-  
+
+  const handleAddFriend = async (friendId) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.post(
+        `http://localhost:3000/api/users/${userId}/friends`,
+        { friendId },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      if (response.status === 200) {
+        setFriends((prev) => [...prev, response.data]);
+        setFriendResults((prev) => prev.filter((friend) => friend.id !== friendId));
+      }
+    } catch (err) {
+      console.error('Erro ao adicionar amigo:', err.message);
+    }
+  };
+
+  const handleRemoveFriend = async (friendId) => {
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`http://localhost:3000/api/users/${userId}/friends`, {
+        data: { friendId },
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      setFriends((prev) => prev.filter((friend) => friend.id !== friendId));
+    } catch (err) {
+      console.error('Erro ao remover amigo:', err.message);
+    }
+  };
 
   const handleAddGame = async (game) => {
     try {
@@ -143,7 +203,7 @@ const Profile = () => {
   const handleRemoveGame = async (gameName) => {
     try {
       await axios.delete(`http://localhost:3000/api/users/${userId}/games`, {
-        
+
         data: { game: gameName },
       });
       setUser((prev) => ({
@@ -163,7 +223,7 @@ const Profile = () => {
 
   const Modal = ({ isOpen, title, children, onClose }) => {
     if (!isOpen) return null;
-  
+
     return (
       <div className="modal-overlay">
         <div className="modal-content">
@@ -176,22 +236,86 @@ const Profile = () => {
       </div>
     );
   };
-  
+
 
   return (
     <div className="profile-container">
       <div className="profile-wrapper">
-      <div className="profile-header">
-  <div className="profile-info">
-    <img
-      src={`http://localhost:3000/${user.profilePicture}`}
-      alt="Foto de perfil"
-      className="profile-picture"
-    />
-    <h1 className="profile-title">Bem-vindo, {user.username}!</h1>
-  </div>
-  <ProfilePictureUpload />
-</div>
+        <div className="profile-header">
+          <div className="profile-info">
+            <img
+              src={`http://localhost:3000/${user.profilePicture}`}
+              alt="Foto de perfil"
+              className="profile-picture"
+            />
+            <h1 className="profile-title">Bem-vindo, {user.username}!</h1>
+          </div>
+          <ProfilePictureUpload />
+        </div>
+        <div className="profile-section">
+          <h3>Amigos</h3>
+          <div className="friends-grid">
+            {friends.map((friend, index) => (
+              <div key={`${friend.name}-${index}`} className="friend-card">
+                <button
+                  className="remove-button"
+                  onClick={() => handleRemoveFriend(friend.id)}
+                >
+                  &times;
+                </button>
+                <img
+                  src={`http://localhost:3000/${friend.profilePicture}` || '/images/default_user.png'} 
+                  alt={friend.name || 'Amigo'}
+                  className="friend-image"
+                />
+                
+                <p>{friend.name || friend.username}</p>
+              </div>
+            ))}
+            <div
+              className="friend-card add-card"
+              onClick={() => setShowAddFriend(true)}
+            >
+              <div className="add-icon">+</div>
+              <p>Adicionar Amigo</p>
+            </div>
+          </div>
+        </div>
+        {showAddFriend && (
+          <div className="modal-overlay" onClick={() => setShowAddFriend(false)}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-header">
+                <h2>Adicionar Amigo</h2>
+                <button onClick={() => setShowAddFriend(false)}>Fechar</button>
+              </div>
+              <input
+                type="text"
+                placeholder="Buscar amigos..."
+                value={searchFriend}
+                onChange={(e) => setSearchFriend(e.target.value)}
+                className="modal-search-input"
+              />
+              <div className="friends-grid">
+                {friendResults.map((friend) => (
+                  <div
+                    key={friend.id}
+                    className="friend-card"
+                    onClick={() => handleAddFriend(friend.id)}
+                  >
+                    <img
+                      src={`http://localhost:3000/${friend.profilePicture}` || '/images/default_user.png'} 
+                      alt={friend.name}
+                      className="friend-image"
+                    />
+                    <p>{friend.name || friend.username}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+
 
         <div className="profile-section">
           <h3>Plataformas</h3>
@@ -212,8 +336,8 @@ const Profile = () => {
                 <p>{platform.name}</p>
               </div>
             ))}
-            <div 
-              className="platform-card add-card" 
+            <div
+              className="platform-card add-card"
               onClick={() => setShowAddPlatform(true)}
             >
               <div className="add-icon">+</div>
@@ -233,16 +357,16 @@ const Profile = () => {
                 >
                   &times;
                 </button>
-                <img 
-                  src={game.image || '/images/default_game.png'} 
-                  alt={game.name} 
-                  className="game-image" 
+                <img
+                  src={game.image || '/images/default_game.png'}
+                  alt={game.name}
+                  className="game-image"
                 />
                 <p>{game.name}</p>
               </div>
             ))}
-            <div 
-              className="game-card add-card" 
+            <div
+              className="game-card add-card"
               onClick={() => setShowAddGame(true)}
             >
               <div className="add-icon">+</div>
@@ -255,8 +379,8 @@ const Profile = () => {
       {/* Platforms Modal */}
       {showAddPlatform && (
         <div className="modal-overlay" onClick={() => setShowAddPlatform(false)}>
-          <div 
-            className="modal-content" 
+          <div
+            className="modal-content"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="modal-header">
@@ -289,8 +413,8 @@ const Profile = () => {
       {/* Games Modal */}
       {showAddGame && (
         <div className="modal-overlay" onClick={() => setShowAddGame(false)}>
-          <div 
-            className="modal-content" 
+          <div
+            className="modal-content"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="modal-header">
@@ -314,10 +438,10 @@ const Profile = () => {
                     setShowAddGame(false);
                   }}
                 >
-                  <img 
-                    src={game.image || '/images/default_game.png'} 
-                    alt={game.name} 
-                    className="game-image" 
+                  <img
+                    src={game.image || '/images/default_game.png'}
+                    alt={game.name}
+                    className="game-image"
                   />
                   <p>{game.name}</p>
                 </div>
@@ -329,6 +453,6 @@ const Profile = () => {
     </div>
   );
 };
-  
+
 
 export default Profile;

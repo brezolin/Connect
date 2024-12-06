@@ -253,10 +253,10 @@ const getUserFriends = async (req, res) => {
       where: {
         id: friendsIds,
       },
-      attributes: ['id', 'username'],
+      attributes: ['id', 'username', 'profilePicture'],
     });
 
-    res.status(200).json(friends);
+    res.status(200).json(friends);  
   } catch (error) {
     console.error('Erro ao buscar amigos:', error.message);
     res.status(500).json({ error: 'Erro ao buscar amigos.' });
