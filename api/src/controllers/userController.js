@@ -236,6 +236,38 @@ const addFriends = async (req, res) => {
     res.status(500).json({ error: 'Erro ao adicionar amigo.' });
   }
 };
+const removeFriend = async (req, res) => {
+  const userId = req.params.id; // ID do usuário
+  const { friendId } = req.body; // ID do amigo a ser removido
+
+  try {
+    // Buscar o usuário pelo ID
+    const user = await User.findByPk(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: 'Usuário não encontrado.' });
+    }
+
+    // Obter a lista de amigos
+    const userFriends = user.friends || [];
+    
+    // Verificar se o amigo está na lista
+    if (!userFriends.includes(friendId)) {
+      return res.status(400).json({ error: 'Amigo não encontrado na lista.' });
+    }
+
+    // Remover o amigo da lista
+    const updatedFriends = userFriends.filter((id) => id !== friendId);
+
+    // Atualizar o campo `friends` do usuário
+    await User.update({ friends: updatedFriends }, { where: { id: userId } });
+
+    res.status(200).json({ message: 'Amigo removido com sucesso.', friends: updatedFriends });
+  } catch (error) {
+    console.error('Erro ao remover amigo:', error.message);
+    res.status(500).json({ error: 'Erro ao remover amigo.' });
+  }
+};
 
 
 const getUserFriends = async (req, res) => {
@@ -348,6 +380,8 @@ const updateProfilePicture = async (req, res) => {
     console.error('Erro ao atualizar foto de perfil:', error);
     res.status(500).json({ error: 'Erro ao atualizar foto de perfil.' });
   }
+
+
 };
 
 
@@ -362,5 +396,6 @@ module.exports = {
   buscaFriends,
   buscaTodosUsuarios,
   updateProfilePicture,
+  removeFriend
 };
 

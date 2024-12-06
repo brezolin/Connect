@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './UserProfile.css'; // Importando o arquivo de estilos
 import ProfilePictureUpload from '../components/uploudPictureProfile';
+import AddFriend from '../components/AddFriend';
 
 const Profile = () => {
   const [user, setUser] = useState(null);
@@ -14,88 +15,74 @@ const Profile = () => {
   const [showAddPlatform, setShowAddPlatform] = useState(false);
   const [showAddGame, setShowAddGame] = useState(false);
   const userId = localStorage.getItem('user');
-  const [friends, setFriends] = useState([]); // Lista de amigos
-  const [searchFriend, setSearchFriend] = useState(''); // Campo de busca para amigos
-  const [friendResults, setFriendResults] = useState([]); // Resultados da busca de amigos
-  const [showAddFriend, setShowAddFriend] = useState(false); // Controle do modal de amigos
+  const [friends, setFriends] = useState([]);
+  const [showAddFriend, setShowAddFriend] = useState(false);
 
-
-
-
-
+  const token = localStorage.getItem('token');
 
   useEffect(() => {
     const fetchUserProfile = async () => {
+      if (!token) {
+        setError('Token não encontrado. Faça login novamente.');
+        setLoading(false);
+        return;
+      }
       try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-          setError('Token não encontrado. Faça login novamente.');
-          setLoading(false);
-          return;
-        }
-        const response = await axios.get(`http://localhost:3000/api/users/${userId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            }
-          })
+        const response = await axios.get(`http://localhost:3000/api/users/${userId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          }
+        });
         setUser(response.data);
-        console.log(response.data)
         setLoading(false);
       } catch (err) {
         setError('Erro ao carregar informações do perfil.');
         setLoading(false);
       }
     };
-
     fetchUserProfile();
-  }, [userId]);
+  }, [userId, token]);
 
   useEffect(() => {
     const fetchFriends = async () => {
+      if (!token) return;
       try {
-        const token = localStorage.getItem('token');
-        if (!token) return;
-
         const response = await axios.get(`http://localhost:3000/api/users/${userId}/friends`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setFriends(response.data);
-        console.log(response.data);
       } catch (err) {
         console.error('Erro ao buscar amigos:', err.message);
       }
     };
-
     fetchFriends();
-  }, [userId]);
-
-
-
-
+  }, [userId, token]);
 
   useEffect(() => {
     const fetchAvailablePlatforms = async () => {
+      if (!token) return;
       try {
-        const response = await axios.get('http://localhost:3000/api/platforms');
+        const response = await axios.get('http://localhost:3000/api/platforms', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         setAvailablePlatforms(response.data);
       } catch (err) {
         console.error('Erro ao buscar plataformas disponíveis:', err.message);
       }
     };
-
     fetchAvailablePlatforms();
-  }, []);
+  }, [token]);
 
   useEffect(() => {
     if (searchTerm.trim() === '') {
       setSearchResults([]);
       return;
     }
-
+    if (!token) return;
     const fetchGames = async () => {
       try {
         const response = await axios.get('http://localhost:3000/api/games/search', {
+          headers: { Authorization: `Bearer ${token}` },
           params: { query: searchTerm },
         });
         setSearchResults(response.data);
@@ -103,19 +90,63 @@ const Profile = () => {
         console.error('Erro ao buscar jogos:', err.message);
       }
     };
-
     const timeoutId = setTimeout(fetchGames, 300);
     return () => clearTimeout(timeoutId);
-  }, [searchTerm]);
+  }, [searchTerm, token]);
+
+  const handleRemoveFriend = async (friendId) => {
+    if (!token) return;
+    try {
+      await axios.delete(`http://localhost:3000/api/users/${userId}/removeFriend`, {
+        headers: { Authorization: `Bearer ${token}` },
+        data: { friendId },
+      });
+      setFriends((prev) => prev.filter((friend) => friend.id !== friendId));
+    } catch (err) {
+      console.error('Erro ao remover amigo:', err.message);
+    }
+  };
+
+  const handleRemovePlatform = async (platformName) => {
+    if (!token) return;
+    try {
+      await axios.delete(`http://localhost:3000/api/users/${userId}/platforms`, {
+        headers: { Authorization: `Bearer ${token}` },
+        data: { platform: platformName },
+      });
+      setUser((prev) => ({
+        ...prev,
+        platforms: prev.platforms.filter((platform) => platform.name !== platformName),
+      }));
+    } catch (err) {
+      console.error('Erro ao remover plataforma:', err.message);
+    }
+  };
+
+  const handleRemoveGame = async (gameName) => {
+    if (!token) return;
+    try {
+      await axios.delete(`http://localhost:3000/api/users/${userId}/games`, {
+        headers: { Authorization: `Bearer ${token}` },
+        data: { game: gameName },
+      });
+      setUser((prev) => ({
+        ...prev,
+        favorite_games: prev.favorite_games.filter((game) => game.name !== gameName),
+      }));
+    } catch (err) {
+      console.error('Erro ao remover jogo favorito:', err.message);
+    }
+  };
 
   const handleAddPlatform = async (platformName) => {
-    if (!platformName) return;
-
+    if (!platformName || !token) return;
     try {
-      const response = await axios.post(`http://localhost:3000/api/users/${userId}/platforms`, {
-        platform: platformName,
-      });
-
+      const response = await axios.post(
+        `http://localhost:3000/api/users/${userId}/platforms`,
+        { platform: platformName },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
       if (response.status === 200) {
         setUser((prev) => ({
           ...prev,
@@ -132,44 +163,14 @@ const Profile = () => {
     }
   };
 
-  const handleAddFriend = async (friendId) => {
+  const handleAddGame = async (game) => {
+    if (!token) return;
     try {
-      const token = localStorage.getItem('token');
       const response = await axios.post(
-        `http://localhost:3000/api/users/${userId}/friends`,
-        { friendId },
+        `http://localhost:3000/api/users/${userId}/games`,
+        { game: game.name },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-
-      if (response.status === 200) {
-        setFriends((prev) => [...prev, response.data]);
-        setFriendResults((prev) => prev.filter((friend) => friend.id !== friendId));
-      }
-    } catch (err) {
-      console.error('Erro ao adicionar amigo:', err.message);
-    }
-  };
-
-  const handleRemoveFriend = async (friendId) => {
-    try {
-      const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:3000/api/users/${userId}/friends`, {
-        data: { friendId },
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      setFriends((prev) => prev.filter((friend) => friend.id !== friendId));
-    } catch (err) {
-      console.error('Erro ao remover amigo:', err.message);
-    }
-  };
-
-  const handleAddGame = async (game) => {
-    try {
-      const response = await axios.post(`http://localhost:3000/api/users/${userId}/games`, {
-        game: game.name,
-      });
-
       if (response.status === 200) {
         setUser((prev) => ({
           ...prev,
@@ -186,35 +187,6 @@ const Profile = () => {
     }
   };
 
-  const handleRemovePlatform = async (platformName) => {
-    try {
-      await axios.delete(`http://localhost:3000/api/users/${userId}/platforms`, {
-        data: { platform: platformName },
-      });
-      setUser((prev) => ({
-        ...prev,
-        platforms: prev.platforms.filter((platform) => platform.name !== platformName),
-      }));
-    } catch (err) {
-      console.error('Erro ao remover plataforma:', err.message);
-    }
-  };
-
-  const handleRemoveGame = async (gameName) => {
-    try {
-      await axios.delete(`http://localhost:3000/api/users/${userId}/games`, {
-
-        data: { game: gameName },
-      });
-      setUser((prev) => ({
-        ...prev,
-        favorite_games: prev.favorite_games.filter((game) => game.name !== gameName),
-      }));
-    } catch (err) {
-      console.error('Erro ao remover jogo favorito:', err.message);
-    }
-  };
-
   if (loading) return <p>Carregando perfil...</p>;
   if (error) return <p>{error}</p>;
 
@@ -223,10 +195,9 @@ const Profile = () => {
 
   const Modal = ({ isOpen, title, children, onClose }) => {
     if (!isOpen) return null;
-
     return (
-      <div className="modal-overlay">
-        <div className="modal-content">
+      <div className="modal-overlay" onClick={onClose}>
+        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
           <h3>{title}</h3>
           <button className="close-button" onClick={onClose}>
             &times;
@@ -236,7 +207,6 @@ const Profile = () => {
       </div>
     );
   };
-
 
   return (
     <div className="profile-container">
@@ -252,6 +222,8 @@ const Profile = () => {
           </div>
           <ProfilePictureUpload />
         </div>
+
+        {/* Amigos */}
         <div className="profile-section">
           <h3>Amigos</h3>
           <div className="friends-grid">
@@ -264,11 +236,10 @@ const Profile = () => {
                   &times;
                 </button>
                 <img
-                  src={`http://localhost:3000/${friend.profilePicture}` || '/images/default_user.png'} 
+                  src={`http://localhost:3000/${friend.profilePicture}` || '/images/default_user.png'}
                   alt={friend.name || 'Amigo'}
                   className="friend-image"
                 />
-                
                 <p>{friend.name || friend.username}</p>
               </div>
             ))}
@@ -281,42 +252,19 @@ const Profile = () => {
             </div>
           </div>
         </div>
+
+        {/* Modal de adicionar amigo */}
         {showAddFriend && (
-          <div className="modal-overlay" onClick={() => setShowAddFriend(false)}>
-            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-              <div className="modal-header">
-                <h2>Adicionar Amigo</h2>
-                <button onClick={() => setShowAddFriend(false)}>Fechar</button>
-              </div>
-              <input
-                type="text"
-                placeholder="Buscar amigos..."
-                value={searchFriend}
-                onChange={(e) => setSearchFriend(e.target.value)}
-                className="modal-search-input"
-              />
-              <div className="friends-grid">
-                {friendResults.map((friend) => (
-                  <div
-                    key={friend.id}
-                    className="friend-card"
-                    onClick={() => handleAddFriend(friend.id)}
-                  >
-                    <img
-                      src={`http://localhost:3000/${friend.profilePicture}` || '/images/default_user.png'} 
-                      alt={friend.name}
-                      className="friend-image"
-                    />
-                    <p>{friend.name || friend.username}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+          <Modal
+            isOpen={showAddFriend}
+            title="Busque um amigo"
+            onClose={() => setShowAddFriend(false)}
+          >
+            <AddFriend userId={userId} onClose={() => setShowAddFriend(false)} />
+          </Modal>
         )}
 
-
-
+        {/* Plataformas */}
         <div className="profile-section">
           <h3>Plataformas</h3>
           <div className="platforms-grid">
@@ -346,6 +294,7 @@ const Profile = () => {
           </div>
         </div>
 
+        {/* Jogos Favoritos */}
         <div className="profile-section">
           <h3>Jogos Favoritos</h3>
           <div className="games-grid">
@@ -376,83 +325,72 @@ const Profile = () => {
         </div>
       </div>
 
-      {/* Platforms Modal */}
+      {/* Modal de adicionar plataforma */}
       {showAddPlatform && (
-        <div className="modal-overlay" onClick={() => setShowAddPlatform(false)}>
-          <div
-            className="modal-content"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="modal-header">
-              <h2>Selecione uma Plataforma</h2>
-              <button onClick={() => setShowAddPlatform(false)}>Fechar</button>
-            </div>
-            <div className="platforms-grid">
-              {availablePlatforms.map((platform) => (
-                <div
-                  key={platform.id}
-                  className="platform-card"
-                  onClick={() => {
-                    handleAddPlatform(platform.name);
-                    setShowAddPlatform(false);
-                  }}
-                >
-                  <img
-                    src={platform.image_url ? `http://localhost:3000${platform.image_url}` : '/images/default_platform.png'}
-                    alt={platform.name}
-                    className="platform-image"
-                  />
-                  <p>{platform.name}</p>
-                </div>
-              ))}
-            </div>
+        <Modal
+          isOpen={showAddPlatform}
+          title="Selecione uma Plataforma"
+          onClose={() => setShowAddPlatform(false)}
+        >
+          <div className="platforms-grid">
+            {availablePlatforms.map((platform) => (
+              <div
+                key={platform.id}
+                className="platform-card"
+                onClick={() => {
+                  handleAddPlatform(platform.name);
+                  setShowAddPlatform(false);
+                }}
+              >
+                <img
+                  src={platform.image_url ? `http://localhost:3000${platform.image_url}` : '/images/default_platform.png'}
+                  alt={platform.name}
+                  className="platform-image"
+                />
+                <p>{platform.name}</p>
+              </div>
+            ))}
           </div>
-        </div>
+        </Modal>
       )}
 
-      {/* Games Modal */}
+      {/* Modal de adicionar jogo */}
       {showAddGame && (
-        <div className="modal-overlay" onClick={() => setShowAddGame(false)}>
-          <div
-            className="modal-content"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="modal-header">
-              <h2>Busque um Jogo</h2>
-              <button onClick={() => setShowAddGame(false)}>Fechar</button>
-            </div>
-            <input
-              type="text"
-              placeholder="Buscar jogos..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="modal-search-input"
-            />
-            <div className="games-grid">
-              {searchResults.map((game) => (
-                <div
-                  key={game.id}
-                  className="game-card"
-                  onClick={() => {
-                    handleAddGame(game);
-                    setShowAddGame(false);
-                  }}
-                >
-                  <img
-                    src={game.image || '/images/default_game.png'}
-                    alt={game.name}
-                    className="game-image"
-                  />
-                  <p>{game.name}</p>
-                </div>
-              ))}
-            </div>
+        <Modal
+          isOpen={showAddGame}
+          title="Busque um Jogo"
+          onClose={() => setShowAddGame(false)}
+        >
+          <input
+            type="text"
+            placeholder="Buscar jogos..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="modal-search-input"
+          />
+          <div className="games-grid">
+            {searchResults.map((game) => (
+              <div
+                key={game.id}
+                className="game-card"
+                onClick={() => {
+                  handleAddGame(game);
+                  setShowAddGame(false);
+                }}
+              >
+                <img
+                  src={game.image || '/images/default_game.png'}
+                  alt={game.name}
+                  className="game-image"
+                />
+                <p>{game.name}</p>
+              </div>
+            ))}
           </div>
-        </div>
+        </Modal>
       )}
     </div>
   );
 };
-
 
 export default Profile;

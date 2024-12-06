@@ -11,14 +11,16 @@ const {
   buscaFriends,
   buscaTodosUsuarios,
   updateProfilePicture,
+  removeFriend
+  
 } = require('../controllers/userController');
 const router = express.Router();
 
-// const isAuthenticated = require('../middleware/authMiddleware');
+const isAuthenticated = require('../middleware/authMiddleware');
 
 
-// // Proteger todas as rotas com autenticação
-// router.use(isAuthenticated);
+// Proteger todas as rotas com autenticação
+router.use(isAuthenticated);
 
 
 // Rotas específicas (fixas) devem vir primeiro
@@ -33,6 +35,7 @@ router.post('/:id/games', addGameToUser); // Adicionar jogo favorito
 router.delete('/:id/games', removeGameFromUser); // Remover jogo favorito
 router.get('/:id/friends', getUserFriends); // Buscar amigos do usuário
 router.post('/:id/friends', addFriends); // Adicionar amigo
+router.delete('/:id/removeFriend', removeFriend);
 router.post('/profile-picture', upload.single('profilePicture'), updateProfilePicture);
 
 module.exports = router;
