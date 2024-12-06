@@ -9,7 +9,7 @@ const Feed = () => {
   const [error, setError] = useState(null);
   const [hoveredItem, setHoveredItem] = useState(null);
   const carouselRef = useRef(null);
-  const scrollArea = 500;
+  const scrollArea = 200;
 
   useEffect(() => {
     async function fetchNews() {
